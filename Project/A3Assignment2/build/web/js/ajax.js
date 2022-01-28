@@ -6,6 +6,7 @@ var log = "n";
 var mapp = 0;
 //var map;
 
+//show-hide password
 function Visible() {
   var x = document.getElementById("password");
   if (x.type === "password") {
@@ -17,6 +18,7 @@ function Visible() {
   }
 }
 
+//print all the json of one
 function createTableFromJSON(data) {
     var html = "<table><tr><th>Category</th><th>Value</th></tr>";
     for (const x in data) {
@@ -29,6 +31,7 @@ function createTableFromJSON(data) {
 
 }
 
+//print doctors and in map (guest)
 function createTableFromJSON2(data) {
     var count = Object.keys(data).length;
     console.log(count);
@@ -90,6 +93,8 @@ function createTableFromJSON2(data) {
 
 }
 
+//print table with username,firstname,lastname,birthdate
+//option to delete
 function createTableFromJSON3(data) {
     var count = Object.keys(data).length;
     console.log(count);
@@ -109,12 +114,14 @@ function createTableFromJSON3(data) {
 
 }
 
+//print doctor table with usernamr,firstname,lastname,address,city,doctor_info,specialty,telephone
+//option to certify
 function createTableFromJSON4(data) {
     var count = Object.keys(data).length;
     console.log(count);
     var html = "";
     for (var i = 0; i < count; i++) {
-        html += "<button class='block' value='" + data[i].username + "' onclick='doCertified(this.value)'>"
+        html += "<button class='block' value='" + data[i].username + "' onclick='certifiedPut(this.value)'>"
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
         html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
@@ -166,6 +173,7 @@ function isLoggedIn() {
     xhr.send();
 }
 
+//Loggin optiond
 function userLogin() {
     $("#choices").load("login.html");
     document.getElementById("title").innerHTML = "User Login";
@@ -194,7 +202,7 @@ function guestLogin() {
     $("#choices").html("");
     document.getElementById("title").innerHTML = "Guest";
     $("#choices").append("<h2>Choices:</h2>");
-    $("#choices").append("<button onclick='getCertifiedDoctors()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='userLogin()' class='button' >Loggin as Simple User</button><br>");
     $("#choices").append("<a class='button' target='_blank' href='http://localhost:8080/A3-Assignment1'>Register</a><br>");
     $("#choices").append("<br><h2>Useful links:</h2>");
@@ -205,6 +213,7 @@ function guestLogin() {
     $("#ajaxContent").html("");
 }
 
+//do login
 function loginPost() {
     //let myForm = document.getElementById('loginForm');
     //let formData = new FormData(myForm);
@@ -268,45 +277,47 @@ function loginPost() {
 
 }
 
+//set Choices
 function setChoicesForLoggedUser() {
     $("#choices").html("");
     $("#choices").append("<h2>Choices:</h2>");
-    $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
+    $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='getCertifiedDoctors()'  class='button'>Get All Certified Doctors</button><br>");
-    $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
 }
 
 function setChoicesForDoctor() {
     $("#choices").html("");
     $("#choices").append("<h2>Choices:</h2>");
-    $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
+    $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='getCertifiedDoctors()'  class='button'>Get All Certified Doctors</button><br>");
-    $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
 }
 
 function setChoicesForAdmin() {
     $("#choices").html("");
     $("#choices").append("<h2>Choices:</h2>");
-    $("#choices").append("<button onclick='getAllUsers()' class='button' >See All Users</button><br>");
-    $("#choices").append("<button onclick='getUncertifiedDoctors()' class='button' >See Pending Applications</button><br>");
-    $("#choices").append("<button onclick='getDataRequest()' class='button' >See Your Data</button><br>");
+    $("#choices").append("<button onclick='allUsersGet()' class='button' >See All Users</button><br>");
+    $("#choices").append("<button onclick='uncertifiedDoctorsGet()' class='button' >See Pending Applications</button><br>");
+    $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='getCertifiedDoctors()'  class='button'>Get All Certified Doctors</button><br>");
-    $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 }
 
-function logout() {
+//do Logout
+function logoutPost() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -325,7 +336,7 @@ function logout() {
     xhr.send();
 }
 
-function getDataRequest() {
+function dataGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -343,6 +354,8 @@ function getDataRequest() {
     xhr.send();
 }
 
+//sxedon idia me thn apo panw, mallon periti 
+//zhtaei ta data kai ta vazei sthn forma allaghs
 function changeDataRequest() {
     $('#ajaxContent').load("form.html");
     var xhr = new XMLHttpRequest();
@@ -375,6 +388,8 @@ function changeDataRequest() {
     xhr.send();
 }
 
+//call from form.html
+//updates/changes the user's data
 function ChangePUT() {
     let myForm = document.getElementById('form_log');
     let formData = new FormData(myForm);
@@ -404,7 +419,6 @@ function ChangePUT() {
     if (log === 'd') {
         xhr.open('PUT', 'Data');
     } else {
-        //xhr.open('POST', 'Update?current_user=' + current_user);
         xhr.open('PUT', 'Data');
     }
     xhr.setRequestHeader("Content-type", "application/json");
@@ -505,7 +519,7 @@ function getIdealWeight() {
     }
 }
 
-function getCertifiedDoctors() {
+function certifiedDoctorsGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -526,7 +540,7 @@ function getCertifiedDoctors() {
     xhr.send();
 }
 
-function getUncertifiedDoctors() {
+function uncertifiedDoctorsGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -545,7 +559,8 @@ function getUncertifiedDoctors() {
     xhr.send();
 }
 
-function getAllUsers() {
+//get all the users
+function allUsersGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -564,6 +579,8 @@ function getAllUsers() {
     xhr.send();
 }
 
+//deletes a user
+//mallon na metakinisw thn doDelete sto Data.java
 function showDelete(name) {
     console.log(name);
     var xhr = new XMLHttpRequest();
@@ -572,7 +589,7 @@ function showDelete(name) {
             //const responseData = JSON.parse(xhr.responseText);
             //console.log(responseData);
             $('#ajaxContent').html("Successful Delete.");
-            //getAllUsers();
+            //allUsersGet();
             // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -584,7 +601,8 @@ function showDelete(name) {
     xhr.send();
 }
 
-function doCertified(username) {
+//make a doctor certified
+function certifiedPut(username) {
     console.log(username);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -592,7 +610,7 @@ function doCertified(username) {
             //const responseData = JSON.parse(xhr.responseText);
             //console.log(responseData);
             $('#ajaxContent').html("Successful Certification.");
-            //getAllUsers();
+            //allUsersGet();
             // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -604,6 +622,7 @@ function doCertified(username) {
     xhr.send();
 }
 
+//loads randevou from
 function creatRandevou(){
     id = docID();
     var currentdate = new Date(); 
@@ -630,11 +649,9 @@ function creatRandevou(){
     $("#choices").append('</form>');*/
     
     $("#choices").load("RandevouForm.html");
-    
-    $("#choices").append("<br><button onclick='setChoicesForDoctor()'  class='button'>Back</button><br>");
-    $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
 }
 
+//checks if randevou date time is in the past
 function righttime(){
     var currentdate = new Date();
     var month = (currentdate.getMonth()+1);
@@ -667,6 +684,7 @@ function righttime(){
     }
 }
 
+//creates randevou
 function RandevouPost(){
     let myForm = document.getElementById('form_randevou');
     let formData = new FormData(myForm);
@@ -698,6 +716,8 @@ function RandevouPost(){
     xhr.send(JSON.stringify(data));
 }
 
+//GET Data.java
+//gets doctors ID
 function docID(){
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
