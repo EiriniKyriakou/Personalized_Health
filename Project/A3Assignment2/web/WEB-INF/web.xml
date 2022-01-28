@@ -36,6 +36,10 @@
         <servlet-name>DoctorLogin</servlet-name>
         <servlet-class>servlets.DoctorLogin</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Randevou</servlet-name>
+        <servlet-class>servlets.Randevou</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -71,6 +75,10 @@
     <servlet-mapping>
         <servlet-name>DoctorLogin</servlet-name>
         <url-pattern>/DoctorLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Randevou</servlet-name>
+        <url-pattern>/Randevou</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

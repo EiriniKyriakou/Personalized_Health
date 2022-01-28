@@ -37,5 +37,18 @@ public class JSON_Converter {
         String json = gson.toJson(per, User.class);
         return json;
     }
+
+    public Randevouz jsonToRandevouz(BufferedReader json) {
+        Gson gson = new Gson();
+        Randevouz msg = gson.fromJson(json, Randevouz.class);
+        return msg;
+    }
+
+    public String randevouzToJSON(Randevouz ran) {
+        Gson gson = new Gson();
+
+        String json = gson.toJson(ran, Randevouz.class);
+        return json;
+    }
     
 }

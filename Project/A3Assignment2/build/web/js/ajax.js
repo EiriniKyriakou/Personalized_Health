@@ -338,8 +338,7 @@ function getDataRequest() {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    var current_user = localStorage.getItem("current_user");
-    xhr.open('GET', 'Data?current_user=' + current_user);
+    xhr.open('GET', 'Data');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -606,6 +605,7 @@ function doCertified(username) {
 }
 
 function creatRandevou(){
+    id = docID();
     var currentdate = new Date(); 
     var mindatetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
@@ -615,21 +615,21 @@ function creatRandevou(){
                 + (currentdate.getFullYear()+1);
     //console.log(datetime);
     $("#choices").html("");
-    $("#choices").append('<form id="form_randevou" name="form_log" onsubmit="RandevouPost();return false;">');
+    /*$("#choices").append('<form id="form_randevou" name="form_randevou" onsubmit="RandevouPost();return false;">');
     $("#choices").append('<label for="date_time">Date:</label> <br>');
     $("#choices").append('<input type="date" id="date" name="date" onchange="righttime()" placeholder="date_time.." min='+mindatetime+' max='+maxdatetime+' title="Must start :00 or :30"required><br>');
     $("#choices").append('<label for="appt">Time:</label> <br>');
-    $("#choices").append('<input type="time" id="appt" name="appt" step="1800000" onchange="righttime()" required><br> ');
+    $("#choices").append('<input type="time" id="appt" name="appt" step="1800000 onchange="righttime()" required><br> ');
     $("#choices").append('<label for="appt">Date and Time:</label> <br>');
-    $("#choices").append('<input  id="date_time" name="date_time"  required>');
+    $("#choices").append('<input  id="date_time" name="date_time"  required><br>');
     $("#choices").append('<label for="appt">Price:</label> <br>');
-    $("#choices").append('<input  type="number" id="price" name="price"  required>');
+    $("#choices").append('<input  type="number" id="price" name="price" min=0 required><br>');
     $("#choices").append('<label for="appt">Doctor Info:</label> <br>');
-    $("#choices").append('<input  type="text" id="doctor_info" name="doctor_info"  required>');
-    $("#choices").append('</form>');
-    $("#choices").append('<br><input type="submit" class="button" value="Create"> <br><br>');
+    $("#choices").append('<input  type="text" id="doctor_info" name="doctor_info"  required><br>');
+    $("#choices").append('<input type="submit" class="button" value="Create!"> <br><br>');
+    $("#choices").append('</form>');*/
     
-    
+    $("#choices").load("RandevouForm.html");
     
     $("#choices").append("<br><button onclick='setChoicesForDoctor()'  class='button'>Back</button><br>");
     $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
@@ -674,20 +674,49 @@ function RandevouPost(){
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
+            console.log(responseData);
                 $('#ajaxContent').html("Successfully created!<br>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-            const responseData = JSON.parse(xhr.responseText);
-            for (const x in responseData) {
-                $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
-            }
+                $('#ajaxContent').append("<p style='color:red'>"  + xhr.responseText + "</p>");
         }
     };
     //var current_user = localStorage.getItem("current_user");
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
-    console.log(data);
+    data["status"] = "free";
+    data["user_id"] = 0;
+    data["user_info"] = null;
+    data["doctor_id"] = id;
+    for (const x in data) {
+        var category = x;
+        var value = data[x];
+        //console.log(category+ " " +value);
+    }
     xhr.open('POST', 'Randevou');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(data));
+}
+
+function docID(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            //$('#ajaxContent').append(createTableFromJSON(responseData));
+            for (const x in responseData) {
+                if(x === "doctor_id"){
+                    console.log(responseData[x]);
+                    id = responseData[x];
+                }
+            }
+            // $("#myForm").hide();
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Data');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
 }
