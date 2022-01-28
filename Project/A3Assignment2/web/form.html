@@ -11,7 +11,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <form id="form_log" name="form_log" onsubmit='ChangePOST();return false;'>
+        <form id="form_log" name="form_log" onsubmit='ChangePUT();return false;'>
             <label for="password">Password:</label> <br>
             <input type="password" id="password" name="password" placeholder="Your Password.."
                    pattern="(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*+`~=?\|<>/]).{8,15}"
@@ -20,12 +20,12 @@ and open the template in the editor.
             <input type="button" id="sp" value="Show Password" onclick="Visible()">
             <span id='message1'></span><br><br>
             
-            <label for="type_user">Type of User:</label> <br>
+         <!--   <label for="type_user">Type of User:</label> <br>
                 <select id="type_user" name="type_user" onclick='doctor_options()'>
                     <option value="default">Simple User</option>
                     <option value="doctor">Doctor</option>
                 </select> <br><br>
-            
+            -->
             <div class="row">
                 <div class="col">
                     <label for="firstname">First Name</label> <br>

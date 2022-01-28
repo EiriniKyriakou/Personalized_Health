@@ -55,7 +55,7 @@ public class Login extends HttpServlet {
         if (session.getAttribute("loggedIn") != null) {
             try (PrintWriter out = response.getWriter()) {
                 System.out.println("einai logged in");
-                String username = request.getParameter("current_user");
+                String username = session.getAttribute("loggedIn").toString();
                 System.out.println(username);
                 EditSimpleUserTable eut = new EditSimpleUserTable();
                 SimpleUser su = eut.databaseToSimpleUserUsername(username);
@@ -96,13 +96,13 @@ public class Login extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             EditSimpleUserTable eut = new EditSimpleUserTable();
             SimpleUser su = eut.databaseToSimpleUser(username, password);
-            HttpSession session = request.getSession();
             if (su == null) {
                 response.setStatus(404);
             } else {
                 if (username.equals("admin")) {
                     response.setStatus(405);
                 } else {
+                    HttpSession session = request.getSession(true);
                     session.setAttribute("loggedIn", username);
                     int activeUsers = 0;
                     if (request.getServletContext().getAttribute("activeUsers") != null) {

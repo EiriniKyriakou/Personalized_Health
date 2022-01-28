@@ -32,6 +32,10 @@
         <servlet-name>UncertifiedDoctors</servlet-name>
         <servlet-class>servlets.UncertifiedDoctors</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorLogin</servlet-name>
+        <servlet-class>servlets.DoctorLogin</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>UncertifiedDoctors</servlet-name>
         <url-pattern>/UncertifiedDoctors</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorLogin</servlet-name>
+        <url-pattern>/DoctorLogin</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

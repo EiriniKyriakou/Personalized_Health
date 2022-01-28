@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import database.tables.EditDoctorTable;
 import database.tables.EditSimpleUserTable;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,7 +16,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import mainClasses.Doctor;
+import mainClasses.JSON_Converter;
 import mainClasses.SimpleUser;
+import mainClasses.User;
 
 /**
  *
@@ -53,16 +58,23 @@ public class Data extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             //JSONConverter jc = new JSONConverter();
 
-            String username = request.getParameter("current_user");
+            //String username = request.getParameter("current_user");
+            HttpSession session = request.getSession();
+            String username = session.getAttribute("loggedIn").toString();
             EditSimpleUserTable eut = new EditSimpleUserTable();
+            EditDoctorTable edt = new EditDoctorTable();
             SimpleUser su = eut.databaseToSimpleUserUsername(username);
-            if (su == null) {
-                response.setStatus(404);
-            } else {
+            Doctor d = edt.databaseToDoctorUsername(username);
+            if (su != null) {
                 String json = eut.simpleUserToJSON(su);
                 out.println(json);
-
                 response.setStatus(200);
+            } else if (edt != null) {
+                String json = edt.doctorToJSON(d);
+                out.println(json);
+                response.setStatus(200);
+            } else {
+                response.setStatus(404);
             }
         } catch (SQLException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,6 +98,43 @@ public class Data extends HttpServlet {
         processRequest(request, response);
     }
 
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            System.out.println("mphke put data");
+            JSON_Converter jc = new JSON_Converter();
+
+            User u = jc.jsonToUser(request.getReader());
+            String JsonString = jc.userToJSON(u);
+
+            HttpSession session = request.getSession();
+            String username = session.getAttribute("loggedIn").toString();
+
+            PrintWriter out = response.getWriter();
+            response.setContentType("text/html;charset=UTF-8");
+
+            EditSimpleUserTable eut = new EditSimpleUserTable();
+            EditDoctorTable edt = new EditDoctorTable();
+            SimpleUser su = eut.databaseToSimpleUserUsername(username);
+            Doctor d = edt.databaseToDoctorUsername(username);
+
+            if (su != null) {
+                eut.updateSimpleUserFromJSON(JsonString, username);
+                response.setStatus(200);
+                response.getWriter().write(JsonString);
+            } else if (edt != null) {
+                edt.updateDoctorFromJSON(JsonString, username);
+                response.setStatus(200);
+                response.getWriter().write(JsonString);
+            } else {
+                response.setStatus(400);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * Returns a short description of the servlet.
      *

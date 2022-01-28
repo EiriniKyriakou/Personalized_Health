@@ -41,10 +41,35 @@ public class EditDoctorTable {
         return json;
     }
 
-    public void updateDoctor(String username, int height) throws SQLException, ClassNotFoundException {
+    public void updateDoctorFromJSON(String json, String username) {
+        try {
+            //User user = null;
+            //user.setFirstname("Eirinii");
+            Doctor user = jsonToDoctor(json);
+            updateDoctor(username, "password", user.getPassword());
+            updateDoctor(username, "firstname", user.getFirstname());
+            updateDoctor(username, "lastname", user.getLastname());
+            updateDoctor(username, "birthdate", user.getBirthdate());
+            updateDoctor(username, "country", user.getCountry());
+            updateDoctor(username, "city", user.getCity());
+            updateDoctor(username, "address", user.getAddress());
+            updateDoctor(username, "lat", Double.toString(user.getLat()));
+            updateDoctor(username, "lon", Double.toString(user.getLon()));
+            updateDoctor(username, "telephone", user.getTelephone());
+            updateDoctor(username, "height", Integer.toString(user.getHeight()));
+            updateDoctor(username, "weight", Double.toString(user.getWeight()));
+            updateDoctor(username, "bloodtype", user.getBloodtype());
+        } catch (SQLException ex) {
+            Logger.getLogger(EditSimpleUserTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditSimpleUserTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateDoctor(String username, String key, String value) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
-        String update = "UPDATE doctors SET height='" + height + "' WHERE username = '" + username + "'";
+        String update = "UPDATE doctors SET " + key + "='" + value + "' WHERE username = '" + username + "'";
         stmt.executeUpdate(update);
     }
 
