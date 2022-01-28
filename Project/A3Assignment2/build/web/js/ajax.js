@@ -613,27 +613,81 @@ function creatRandevou(){
     var maxdatetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
                 + (currentdate.getFullYear()+1);
-    console.log(datetime);
+    //console.log(datetime);
     $("#choices").html("");
     $("#choices").append('<form id="form_randevou" name="form_log" onsubmit="RandevouPost();return false;">');
-    $("#choices").append('<label for="date_time">Date :</label> <br>');
-    $("#choices").append('<input type="date" id="date_time" name="date_time" placeholder="date_time.." min='+mindatetime+' max='+maxdatetime+' title="Must start :00 or :30"required><br>');
-    $("#choices").append('<label for="appt">Time :</label> <br>');
-    $("#choices").append('<input type="time" id="appt" name="appt" step="1800000">');
+    $("#choices").append('<label for="date_time">Date:</label> <br>');
+    $("#choices").append('<input type="date" id="date" name="date" onchange="righttime()" placeholder="date_time.." min='+mindatetime+' max='+maxdatetime+' title="Must start :00 or :30"required><br>');
+    $("#choices").append('<label for="appt">Time:</label> <br>');
+    $("#choices").append('<input type="time" id="appt" name="appt" step="1800000" onchange="righttime()" required><br> ');
+    $("#choices").append('<label for="appt">Date and Time:</label> <br>');
+    $("#choices").append('<input  id="date_time" name="date_time"  required>');
+    $("#choices").append('<label for="appt">Price:</label> <br>');
+    $("#choices").append('<input  type="number" id="price" name="price"  required>');
+    $("#choices").append('<label for="appt">Doctor Info:</label> <br>');
+    $("#choices").append('<input  type="text" id="doctor_info" name="doctor_info"  required>');
     $("#choices").append('</form>');
     $("#choices").append('<br><input type="submit" class="button" value="Create"> <br><br>');
     
     
-    var date = document.getElementById("date_time").value.toString() + " " + document.getElementById("appt").value.toString();
-    var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":"
-    if (date < datetime){
-        $("#ajaxContent").append('Choose future time!');
-    }
     
     $("#choices").append("<br><button onclick='setChoicesForDoctor()'  class='button'>Back</button><br>");
     $("#choices").append("<button onclick='logout()'  class='button'>Logout</button><br>");
+}
+
+function righttime(){
+    var currentdate = new Date();
+    var month = (currentdate.getMonth()+1);
+    var datee = currentdate.getDate() ;
+    var hours = currentdate.getHours();
+    var mins = currentdate.getMinutes()
+    var date = document.getElementById("date").value.toString() + " " + document.getElementById("appt").value.toString()+":00";
+    if (currentdate.getMonth()+1 < 10){
+        month = "0"+month;
+    }
+    if (currentdate.getDate() < 10){
+        datee = "0"+datee;
+    }
+    if (currentdate.getMinutes() < 10){
+        mins = "0"+mins;
+    }
+    if (currentdate.getHours() < 10){
+        hours = "0"+hours;
+    }
+    var datetime =currentdate.getFullYear() + "-"+ month+"-" + datee + " " + hours+ ":" +mins+":00";
+        console.log(date);
+    //var c=Date(dat)
+        console.log(datetime);
+    if (date < datetime){
+        $("#ajaxContent").html('Choose future time!');
+    }else{
+        $("#ajaxContent").html('The date is okay!');
+        document.getElementById("date_time").value = date;
+        
+    }
+}
+
+function RandevouPost(){
+    let myForm = document.getElementById('form_randevou');
+    let formData = new FormData(myForm);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const responseData = JSON.parse(xhr.responseText);
+                $('#ajaxContent').html("Successfully created!<br>");
+        } else if (xhr.status !== 200) {
+            $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
+            const responseData = JSON.parse(xhr.responseText);
+            for (const x in responseData) {
+                $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
+            }
+        }
+    };
+    //var current_user = localStorage.getItem("current_user");
+    const data = {};
+    formData.forEach((value, key) => (data[key] = value));
+    console.log(data);
+    xhr.open('POST', 'Randevou');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify(data));
 }
