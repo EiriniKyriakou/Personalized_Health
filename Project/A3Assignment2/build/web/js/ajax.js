@@ -572,16 +572,14 @@ function certifiedPut(username) {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             //const responseData = JSON.parse(xhr.responseText);
-            //console.log(responseData);
+            //console.log(xhr.responseText);
             $('#ajaxContent').html("Successful Certification.");
             //allUsersGet();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
-    //xhr.open('PUT', 'UncertifiedDoctors?username=' + username);
-    xhr.open('PUT', 'UncertifiedDoctors');
+    xhr.open('PUT', 'UncertifiedDoctors?username=' + username);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }

@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import mainClasses.Doctor;
 
 /**
@@ -27,8 +26,7 @@ import mainClasses.Doctor;
 public class UncertifiedDoctors extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -103,23 +101,21 @@ public class UncertifiedDoctors extends HttpServlet {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("mphke sthn getdoctor");
+        System.out.println("mphke sthn getdoctor put");
         try (PrintWriter out = response.getWriter()) {
             //JSONConverter jc = new JSONConverter();
             int certified = 0;
-            //String username = request.getParameter("username");
-            HttpSession session = request.getSession();
-            String username = session.getAttribute("loggedIn").toString();
+            String username = request.getParameter("username");
             EditDoctorTable edt = new EditDoctorTable();
             ArrayList<Doctor> d = new ArrayList<Doctor>();
             d = edt.databaseToCertifiedDoctors(certified);
             if (d == null) {
                 response.setStatus(404);
             } else {
+                System.out.println("mphke sthn getdoctor put mesa sto else");
                 edt.certifyDoctor(username);
                 Gson gson = new Gson();
                 String json = gson.toJson(d);
-                //String json = edt.simpleUserToJSON(d);
                 out.println(json);
 
                 response.setStatus(200);

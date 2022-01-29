@@ -313,7 +313,8 @@ public class EditDoctorTable {
     public void certifyDoctor(String username) throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
-        String update = "UPDATE doctors SET certified='" + 1 + "' WHERE username = '" + username + "'";
+        String update = "UPDATE doctors SET certified = 1 WHERE username = '" + username + "'";
+        System.out.println("ok update");
         stmt.executeUpdate(update);
     }
 }
