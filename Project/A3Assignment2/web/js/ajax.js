@@ -4,7 +4,6 @@ var height = null;
 var gender = null;
 var log = "n";
 var mapp = 0;
-//var map;
 
 //show-hide password
 function Visible() {
@@ -18,21 +17,43 @@ function Visible() {
   }
 }
 
-//print all the json of one
+//print's a table of a simple json 
 function createTableFromJSON(data) {
     var html = "<table><tr><th>Category</th><th>Value</th></tr>";
     for (const x in data) {
         var category = x;
-        var value = data[x];
-        html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
+        if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
+                    && category !== "lat" && category !== "lon"){
+            var value = data[x];
+            html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
+        }
     }
     html += "</table>";
     return html;
 
 }
 
+//print's a table of a complex json 
+function createTablesFromJSON(data) {
+    var size = Object.keys(data).length;
+    var html = "";
+    for (let i = 0; i < size; i++) {
+        html += "<table><tr><th>Category</th><th>Value</th></tr>";
+        for (const x in data[i]) {
+            var category = x;
+            if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" &&*/ category !== "doctor_id"
+                    && category !== "lat" && category !== "lon"){
+                var value = data[i][x];
+                html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
+            }
+        }
+        html += "</table><br>";
+    }
+    return html;
+}
+
 //print doctors and in map (guest)
-function createTableFromJSON2(data) {
+function createTableFromJSONmap(data) {
     var count = Object.keys(data).length;
     console.log(count);
     var html = '';
@@ -93,14 +114,26 @@ function createTableFromJSON2(data) {
 
 }
 
-//print table with username,firstname,lastname,birthdate
+//print's a table of a complex json 
 //option to delete
-function createTableFromJSON3(data) {
-    var count = Object.keys(data).length;
-    console.log(count);
+function createTableFromJSONdelete(data) {
+    var size = Object.keys(data).length;
+    console.log(size);
     console.log(data);
     var html = "";
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < size; i++) {
+        html += "<button class='block' value='" + data[i].username + "' onclick='showDelete(this.value)'>";
+        html += "<table><tr><th>Category</th><th>Value</th></tr>";
+        for (const x in data[i]) {
+            var category = x;
+            if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
+                    && category !== "lat" && category !== "lon"){
+                var value = data[i][x];
+                html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
+            }
+        }
+        html += "</table>Press to delete</button><br>";
+        /*
         html += "<button class='block' value='" + data[i].username + "' onclick='showDelete(this.value)'>";
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> Username </td><td>" + data[i].username + "</td></tr>";
@@ -108,20 +141,33 @@ function createTableFromJSON3(data) {
         html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
         html += "<tr><td> Birth Date </td><td>" + data[i].birthdate + "</td></tr>";
         html += "</table>Press to delete</button><br>";
+        */
     }
 
     return html;
 
 }
 
-//print doctor table with usernamr,firstname,lastname,address,city,doctor_info,specialty,telephone
+//print's a table of a complex json 
 //option to certify
-function createTableFromJSON4(data) {
-    var count = Object.keys(data).length;
-    console.log(count);
+function createTableFromJSONcertify(data) {
+    var size = Object.keys(data).length;
+    console.log(size);
     var html = "";
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < size; i++) {  
         html += "<button class='block' value='" + data[i].username + "' onclick='certifiedPut(this.value)'>"
+        html += "<table><tr><th>Category</th><th>Value</th></tr>";
+        for (const x in data[i]) {
+            var category = x;
+            if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
+                    && category !== "lat" && category !== "lon"){
+                var value = data[i][x];
+                html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
+            }
+        }
+        html += "</table>Press to certify</button><br>";
+        
+        /*html += "<button class='block' value='" + data[i].username + "' onclick='certifiedPut(this.value)'>"
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
         html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
@@ -130,7 +176,7 @@ function createTableFromJSON4(data) {
         html += "<tr><td> Info </td><td>" + data[i].doctor_info + "</td></tr>";
         html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
         html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
-        html += "</table>Press to certify</button><br>";
+        html += "</table>Press to certify</button><br>";*/
     }
 
     return html;
@@ -236,7 +282,6 @@ function loginPost() {
                 document.getElementById("title").innerHTML = "Doctor";
                 setChoicesForDoctor();
             }
-            //$("#ajaxContent").html(createTableFromJSON(JSON.parse(xhr.responseText)));
         } else if (xhr.status === 405) {
             $("#ajaxContent").html("Login as Administrator.");
             $('#choices').load("logins.html");
@@ -299,6 +344,7 @@ function setChoicesForDoctor() {
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
+    $("#choices").append("<button onclick='RandevouGet()' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
     $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
@@ -531,7 +577,7 @@ function certifiedDoctorsGet() {
             $('#ajaxContent').html("<h2>Certified Doctors:</h2>");
             $('#ajaxContent').append('<div id="Map" style="height:300px; width:100%"></div>');
             $('#ajaxContent').append("<div id='divID'></div>");
-            $('#ajaxContent').append(createTableFromJSON2(responseData));
+            $('#ajaxContent').append(createTableFromJSONmap(responseData));
             // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -550,7 +596,7 @@ function uncertifiedDoctorsGet() {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
             $('#ajaxContent').html("<h2>Uncertified Doctors:</h2>");
-            $('#ajaxContent').append(createTableFromJSON4(responseData));
+            $('#ajaxContent').append(createTableFromJSONcertify(responseData));
             // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -568,10 +614,9 @@ function allUsersGet() {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
-            console.log(responseData);
+            //console.log(responseData);
             $('#ajaxContent').html("<h2>All Users:</h2>");
-            $('#ajaxContent').append(createTableFromJSON3(responseData));
-            // $("#myForm").hide();
+            $('#ajaxContent').append(createTableFromJSONdelete(responseData));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -740,6 +785,23 @@ function docID(){
         }
     };
     xhr.open('GET', 'Data');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+function RandevouGet(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            $('#ajaxContent').html("<h2>Your Appointments</h2>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData));
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Randevou');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }

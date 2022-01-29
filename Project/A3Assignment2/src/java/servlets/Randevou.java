@@ -5,12 +5,13 @@
  */
 package servlets;
 
+import com.google.gson.Gson;
 import database.tables.EditDoctorTable;
 import database.tables.EditRandevouzTable;
-import database.tables.EditSimpleUserTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpSession;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
-import mainClasses.SimpleUser;
 
 /**
  *
@@ -54,26 +54,23 @@ public class Randevou extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //System.out.println("mphke sthn getdata");
+        System.out.println("mphke sthn get Randevou");
         try (PrintWriter out = response.getWriter()) {
-            //JSONConverter jc = new JSONConverter();
-
-            //String username = request.getParameter("current_user");
             HttpSession session = request.getSession();
             String username = session.getAttribute("loggedIn").toString();
-            EditSimpleUserTable eut = new EditSimpleUserTable();
+            EditRandevouzTable ert = new EditRandevouzTable();
             EditDoctorTable edt = new EditDoctorTable();
-            SimpleUser su = eut.databaseToSimpleUserUsername(username);
             Doctor d = edt.databaseToDoctorUsername(username);
-            if (su != null) {
-                String json = eut.simpleUserToJSON(su);
-                out.println(json);
-                response.setStatus(200);
-            } else if (edt != null) {
-                String json = edt.doctorToJSON(d);
+            ArrayList<Randevouz> r = new ArrayList<Randevouz>();
+            r = ert.databaseToRandevouzs(d.getDoctor_id());
+            if (r != null) {
+                Gson gson = new Gson();
+                String json = gson.toJson(r);
+                System.out.println(json);
                 out.println(json);
                 response.setStatus(200);
             } else {
+                out.println("404. You have no appointments!");
                 response.setStatus(404);
             }
         } catch (SQLException ex) {

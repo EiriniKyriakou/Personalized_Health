@@ -110,6 +110,14 @@ public class AllUsers extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    /**
+     * Handles the HTTP <code>DELETE</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         System.out.println("mphke sthn doDelete allusers");
