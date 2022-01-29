@@ -36,9 +36,9 @@ function createTableFromJSON(data) {
 //print's a table of a complex json 
 //and adds an action (delete or certify) if action!=null
 function createTablesFromJSON(data,action) {
-    var size1 = Object.keys(data).length;
+    var size = Object.keys(data).length;
     var html = "";
-    for (let i = 0; i < size1; i++) {
+    for (let i = 0; i < size; i++) {
         if (action!=null){
             html += "<button class='block' value='" + data[i].username + "' onclick='" + action +"(this.value)'>";
         }
