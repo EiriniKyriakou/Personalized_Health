@@ -38,13 +38,13 @@ function createTableFromJSON2(data) {
     var html = '';
     //html += '<div id="Map" style="height:200px; width:200px"></div>';
     //html += "<div id='divID'></div>";
-    if (mapp !== 0) {
-    markers.removeMarker(mar);
-    } else {
+    //if (mapp !== 0) {
+    //markers.removeMarker(mar);
+    //} else {
     map = new OpenLayers.Map("Map");
     var mapnik = new OpenLayers.Layer.OSM();
     map.addLayer(mapnik);
-    }
+    //}
     mapp = 1;
     function setPosition(lat, lon) {
         var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
@@ -138,6 +138,7 @@ function createTableFromJSON4(data) {
 }
 
 function isLoggedIn() {
+    mapp=0;
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -169,7 +170,6 @@ function isLoggedIn() {
         //xhr.open('GET', 'Login?current_user=' + current_user);
         xhr.open('GET', 'Login');
     }
-    
     xhr.send();
 }
 
@@ -199,6 +199,9 @@ function adminLogin() {
 }
 
 function guestLogin() {
+    log = "g";
+    localStorage.setItem("log", log);
+    console.log(log);
     $("#choices").html("");
     document.getElementById("title").innerHTML = "Guest";
     $("#choices").append("<h2>Choices:</h2>");
