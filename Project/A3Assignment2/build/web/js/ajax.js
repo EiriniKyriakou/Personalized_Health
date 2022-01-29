@@ -34,10 +34,14 @@ function createTableFromJSON(data) {
 }
 
 //print's a table of a complex json 
-function createTablesFromJSON(data) {
+//and adds an action (delete or certify) if action!=null
+function createTablesFromJSON(data,action) {
     var size = Object.keys(data).length;
     var html = "";
     for (let i = 0; i < size; i++) {
+        if (action!=null){
+            html += "<button class='block' value='" + data[i].username + "' onclick='" + action +"(this.value)'>";
+        }
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         for (const x in data[i]) {
             var category = x;
@@ -114,75 +118,6 @@ function createTableFromJSONmap(data) {
 
 }
 
-//print's a table of a complex json 
-//option to delete
-function createTableFromJSONdelete(data) {
-    var size = Object.keys(data).length;
-    console.log(size);
-    console.log(data);
-    var html = "";
-    for (var i = 0; i < size; i++) {
-        html += "<button class='block' value='" + data[i].username + "' onclick='showDelete(this.value)'>";
-        html += "<table><tr><th>Category</th><th>Value</th></tr>";
-        for (const x in data[i]) {
-            var category = x;
-            if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
-                    && category !== "lat" && category !== "lon"){
-                var value = data[i][x];
-                html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
-            }
-        }
-        html += "</table>Press to delete</button><br>";
-        /*
-        html += "<button class='block' value='" + data[i].username + "' onclick='showDelete(this.value)'>";
-        html += "<table><tr><th>Category</th><th>Value</th></tr>";
-        html += "<tr><td> Username </td><td>" + data[i].username + "</td></tr>";
-        html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
-        html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
-        html += "<tr><td> Birth Date </td><td>" + data[i].birthdate + "</td></tr>";
-        html += "</table>Press to delete</button><br>";
-        */
-    }
-
-    return html;
-
-}
-
-//print's a table of a complex json 
-//option to certify
-function createTableFromJSONcertify(data) {
-    var size = Object.keys(data).length;
-    console.log(size);
-    var html = "";
-    for (var i = 0; i < size; i++) {  
-        html += "<button class='block' value='" + data[i].username + "' onclick='certifiedPut(this.value)'>"
-        html += "<table><tr><th>Category</th><th>Value</th></tr>";
-        for (const x in data[i]) {
-            var category = x;
-            if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
-                    && category !== "lat" && category !== "lon"){
-                var value = data[i][x];
-                html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
-            }
-        }
-        html += "</table>Press to certify</button><br>";
-        
-        /*html += "<button class='block' value='" + data[i].username + "' onclick='certifiedPut(this.value)'>"
-        html += "<table><tr><th>Category</th><th>Value</th></tr>";
-        html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
-        html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
-        html += "<tr><td> Address </td><td>" + data[i].address + "</td></tr>";
-        html += "<tr><td> City </td><td>" + data[i].city + "</td></tr>";
-        html += "<tr><td> Info </td><td>" + data[i].doctor_info + "</td></tr>";
-        html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
-        html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
-        html += "</table>Press to certify</button><br>";*/
-    }
-
-    return html;
-
-}
-
 function isLoggedIn() {
     mapp=0;
     var xhr = new XMLHttpRequest();
@@ -204,16 +139,13 @@ function isLoggedIn() {
         } else if (xhr.status !== 200) {
             $("#choices").load("logins.html");
             document.getElementById("title").innerHTML = "Login Choices";
-            //alert('Request failed. Returned status of ' + xhr.status);
         }
     };
     log = localStorage.getItem("log");
     console.log(log);
     if(log === "d"){
         xhr.open('GET', 'DoctorLogin');
-    }else{
-        //current_user = localStorage.getItem("current_user");
-        //xhr.open('GET', 'Login?current_user=' + current_user);
+    }else{;
         xhr.open('GET', 'Login');
     }
     xhr.send();
@@ -264,8 +196,6 @@ function guestLogin() {
 
 //do login
 function loginPost() {
-    //let myForm = document.getElementById('loginForm');
-    //let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -304,19 +234,14 @@ function loginPost() {
     };
     var data = $('#loginForm').serialize();
     current_user = document.getElementById('username').value;
-    //localStorage.setItem("current_user", current_user);
-    //console.log(current_user);
-    //const data = {};
-    //formData.forEach((value, key) => (data[key] = value));
-    //console.log(data);
     if (log === "a") {
         xhr.open('Post', 'AdminLogin');
-        console.log("mphke login log=a");
+        //console.log("mphke login log=a");
     } else if (log === "su") {
         xhr.open('Post', 'Login');
-        console.log("mphke login log = su!");
+        //console.log("mphke login log = su!");
     } else {
-        console.log("mphke login log=d");
+        //console.log("mphke login log=d");
         xhr.open('POST','DoctorLogin');
     }
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -393,7 +318,6 @@ function dataGet() {
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>Your Data</h2>");
             $('#ajaxContent').append(createTableFromJSON(responseData));
-            // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -414,7 +338,7 @@ function changeDataRequest() {
             const responseData = JSON.parse(xhr.responseText);
             //$('#ajaxContent').html("<h2>Your Updated Data</h2>");
             //$('#ajaxContent').append(createTableFromJSON(responseData));
-            console.log(responseData);
+            //console.log(responseData);
             for (const x in responseData) {
                 var category = x;
                 var value = responseData[x];
@@ -425,14 +349,11 @@ function changeDataRequest() {
                     //console.log("den mphke " + category);
                 }
             }
-            //updateData();
-            // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
-    xhr.open('GET', 'Data?current_user=' + current_user);
+    xhr.open('GET', 'Data');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -461,10 +382,9 @@ function ChangePUT() {
         }
 
     };
-    //var current_user = localStorage.getItem("current_user");
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
-    console.log(data);
+    //console.log(data);
     if (log === 'd') {
         xhr.open('PUT', 'Data');
     } else {
@@ -583,7 +503,6 @@ function certifiedDoctorsGet() {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
     xhr.open('GET', 'CertifiedDoctors');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
@@ -596,13 +515,12 @@ function uncertifiedDoctorsGet() {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
             $('#ajaxContent').html("<h2>Uncertified Doctors:</h2>");
-            $('#ajaxContent').append(createTableFromJSONcertify(responseData));
-            // $("#myForm").hide();
+            $('#ajaxContent').append("<p>Press a doctor's table to certify</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData,"certifiedPut"));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
     xhr.open('GET', 'UncertifiedDoctors');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
@@ -613,15 +531,15 @@ function allUsersGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            //console.log(responseData);
             $('#ajaxContent').html("<h2>All Users:</h2>");
-            $('#ajaxContent').append(createTableFromJSONdelete(responseData));
+            $('#ajaxContent').append("<p>Press a user's table to delete</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData,"showDelete"));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
     xhr.open('GET', 'AllUsers');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
@@ -638,12 +556,10 @@ function showDelete(name) {
             //console.log(responseData);
             $('#ajaxContent').html("Successful Delete.");
             //allUsersGet();
-            // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    //var current_user = localStorage.getItem("current_user");
     xhr.open('DELETE', 'AllUsers?name=' + name);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
@@ -659,13 +575,13 @@ function certifiedPut(username) {
             //console.log(responseData);
             $('#ajaxContent').html("Successful Certification.");
             //allUsersGet();
-            // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
     //var current_user = localStorage.getItem("current_user");
-    xhr.open('PUT', 'UncertifiedDoctors?username=' + username);
+    //xhr.open('PUT', 'UncertifiedDoctors?username=' + username);
+    xhr.open('PUT', 'UncertifiedDoctors');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -673,6 +589,7 @@ function certifiedPut(username) {
 //loads randevou from
 function creatRandevou(){
     id = docID();
+    /*
     var currentdate = new Date(); 
     var mindatetime = currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
@@ -682,7 +599,7 @@ function creatRandevou(){
                 + (currentdate.getFullYear()+1);
     //console.log(datetime);
     $("#choices").html("");
-    /*$("#choices").append('<form id="form_randevou" name="form_randevou" onsubmit="RandevouPost();return false;">');
+    $("#choices").append('<form id="form_randevou" name="form_randevou" onsubmit="RandevouPost();return false;">');
     $("#choices").append('<label for="date_time">Date:</label> <br>');
     $("#choices").append('<input type="date" id="date" name="date" onchange="righttime()" placeholder="date_time.." min='+mindatetime+' max='+maxdatetime+' title="Must start :00 or :30"required><br>');
     $("#choices").append('<label for="appt">Time:</label> <br>');
@@ -721,7 +638,6 @@ function righttime(){
     }
     var datetime =currentdate.getFullYear() + "-"+ month+"-" + datee + " " + hours+ ":" +mins+":00";
         console.log(date);
-    //var c=Date(dat)
         console.log(datetime);
     if (date < datetime){
         $("#ajaxContent").html('Choose future time!');
@@ -747,7 +663,6 @@ function RandevouPost(){
                 $('#ajaxContent').append("<p style='color:red'>"  + xhr.responseText + "</p>");
         }
     };
-    //var current_user = localStorage.getItem("current_user");
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
     data["status"] = "free";
@@ -779,7 +694,6 @@ function docID(){
                     id = responseData[x];
                 }
             }
-            // $("#myForm").hide();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -796,7 +710,7 @@ function RandevouGet(){
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>Your Appointments</h2>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData));
+            $('#ajaxContent').append(createTablesFromJSON(responseData,null));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }

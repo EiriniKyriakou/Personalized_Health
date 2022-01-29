@@ -17,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import mainClasses.Doctor;
 
 /**
@@ -106,7 +107,9 @@ public class UncertifiedDoctors extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             //JSONConverter jc = new JSONConverter();
             int certified = 0;
-            String username = request.getParameter("username");
+            //String username = request.getParameter("username");
+            HttpSession session = request.getSession();
+            String username = session.getAttribute("loggedIn").toString();
             EditDoctorTable edt = new EditDoctorTable();
             ArrayList<Doctor> d = new ArrayList<Doctor>();
             d = edt.databaseToCertifiedDoctors(certified);
