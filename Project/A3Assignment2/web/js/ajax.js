@@ -58,6 +58,9 @@ function createTablesFromJSON(data, action) {
             }
         }
         html += "</table><br>";
+        if (action !== null){
+            html += "</buttom><br>";
+        }
     }
     return html;
 }
@@ -66,7 +69,7 @@ function createTablesFromJSON(data, action) {
 function createTableFromJSONmap(data) {
     var count = Object.keys(data).length;
     console.log(count);
-    var html = '';
+    var html = "<p>Press doctor's table to send a message";
     //html += '<div id="Map" style="height:200px; width:200px"></div>';
     //html += "<div id='divID'></div>";
     //if (mapp !== 0) {
@@ -100,6 +103,7 @@ function createTableFromJSONmap(data) {
     map.addLayer(markers);
 
     for (var i = 0; i < count; i++) {
+        html += "<button class='block' value='" + data[i].doctor_id + "' onclick='messageReply(this.value)'>";
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
         html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
@@ -108,7 +112,8 @@ function createTableFromJSONmap(data) {
         html += "<tr><td> Info </td><td>" + data[i].doctor_info + "</td></tr>";
         html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
         html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
-        html += "</table><br>";
+        html += "</table>";
+        html += "</buttom><br><br>";
         var position = setPosition(data[i].lat, data[i].lon);
         pos = position;
         var mar = new OpenLayers.Marker(position);
@@ -117,6 +122,7 @@ function createTableFromJSONmap(data) {
         //mar.events.register(true, mar, function(evt){handler(position, msg);});
         console.log(data[i].firstname + ' ' + data[i].lastname);
     }
+    
     //Orismos zoom
     const zoom = 11;
     map.setCenter(pos, zoom);
@@ -265,7 +271,8 @@ function setChoicesForLoggedUser() {
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors!</button><br>");
+    $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges!</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
 }
@@ -847,24 +854,21 @@ function messegesGet(){
 }
 
 function messageReply(r_id){
-    $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='messegesPost("+r_id+");return false;'><input type='text' id='reply_text' name='reply_text' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
+    $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='dataGet2("+r_id+");return false;'><input type='text' id='message' name='message' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
 }
 
-function messegesPost(r_id){
+function messegesPost(r_id,s_id,blood_donation,bloodtype,date_time){
     let myForm = document.getElementById('form_reply');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
-            const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2> Your Messeges:</h2>");
-            $('#ajaxContent').append("<p>Press messege to reply.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData, "messageReply"));
-        } else if (xhr.status === 403) {
-            $('#ajaxContent').html("<p style='color:red'> You don't have any messeges!</p>");
-        } else if (xhr.status !== 200) {
-            alert('Request failed. Returned status of ' + xhr.status);
+            $('#ajaxContent').html("<p style='color:green'> Success, your message was send.</p>");
+        }else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'>"+xhr.responseText+"</p>");
+        }else if (xhr.status !== 200) {
+            $('#ajaxContent').html('Request failed. Returned status of ' + xhr.status);
         }
     };
     const data = {};
@@ -876,13 +880,61 @@ function messegesPost(r_id){
     }else{
         data["doctor_id"] = r_id;
         data["sender"] = "user";
+        data["user_id"] = s_id;
+        data["blood_donation"] = blood_donation;
+        data["bloodtype"] = bloodtype;
+        data["date_time"] = date_time;
     }
+    console.log(data);
     for (const x in data) {
         var category = x;
         var value = data[x];
         console.log(category+ " " +value);
     }
-    //xhr.open('POST', 'Messages');
-    //xhr.setRequestHeader("Content-type", "application/json");
-    //xhr.send();
+    xhr.open('POST', 'Messages');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send(JSON.stringify(data));
+}
+
+function dataGet2(r_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            console.log(responseData);
+            var s_id = responseData.user_id;
+            var blood_donation = responseData.blooddonor;
+            var bloodtype = responseData.bloodtype;
+            console.log(r_id);
+            console.log(s_id);
+            console.log(blood_donation);
+            console.log(bloodtype);
+            var currentdate = new Date();
+            var month = (currentdate.getMonth() + 1);
+            var datee = currentdate.getDate();
+            var hours = currentdate.getHours();
+            var mins = currentdate.getMinutes()
+            currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+            if (currentdate.getMonth() + 1 < 10) {
+                month = "0" + month;
+            }
+            if (currentdate.getDate() < 10) {
+                datee = "0" + datee;
+            }
+            if (currentdate.getHours() < 10) {
+                hours = "0" + hours;
+            }
+            if (currentdate.getMinutes() < 10) {
+                mins = "0" + mins;
+            }
+            var date_time = currentdate.getFullYear() + "-" + month + "-" + datee + " " + hours +":"+mins+":00";
+            messegesPost(r_id, s_id, blood_donation, bloodtype,date_time);
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Data');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
 }

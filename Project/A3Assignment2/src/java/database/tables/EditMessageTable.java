@@ -104,6 +104,7 @@ public class EditMessageTable {
         }
         return null;
     }
+
     public void createMessageTable() throws SQLException, ClassNotFoundException {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();

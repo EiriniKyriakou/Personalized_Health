@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mainClasses.Doctor;
+import mainClasses.JSON_Converter;
 import mainClasses.Message;
 import mainClasses.SimpleUser;
 
@@ -118,6 +119,29 @@ public class Messages extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("mphke post msg");
+        JSON_Converter jc = new JSON_Converter();
+        System.out.println("ti phre: " + request.getReader());
+        Message m = jc.jsonToMessage(request.getReader());
+        System.out.println("m:" + m);
+        String JsonString = jc.messageToJSON(m);
+        System.out.println("jsonstring " + JsonString);
+        EditRandevouzTable ert = new EditRandevouzTable();
+        EditDoctorTable edt = new EditDoctorTable();
+        EditSimpleUserTable esut = new EditSimpleUserTable();
+        EditMessageTable emt = new EditMessageTable();
+        if (ert.databaseToRandevouz(m.getDoctor_id(), m.getUser_id())) {
+            try {
+                emt.addMessageFromJSON(JsonString);
+                response.getWriter().write(JsonString);
+                response.setStatus(200);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Messages.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            response.getWriter().write("Never had a done appointment.");
+            response.setStatus(403);
+        }
     }
 
     /**
