@@ -787,12 +787,12 @@ function seeChoisesForPatient(username){
     $("#ajaxContent").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 }
 
-
 function treatmentform(username){
     $("#ajaxContent").load("treatmentform.html");
     id = docID();
 }
 
+//den exw kanei to servlet
 function treatmentsPost(username){
     let myForm = document.getElementById('form_treat');
     let formData = new FormData(myForm);
