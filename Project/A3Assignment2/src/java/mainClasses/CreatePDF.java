@@ -14,6 +14,7 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,8 +24,9 @@ import java.util.logging.Logger;
  */
 public class CreatePDF {
 
-    public void create() throws DocumentException {
+    public void create(ArrayList<Randevouz> r) throws DocumentException {
         try {
+            System.out.println("mphke sthn create pdf");
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream("iTextHelloWorld.pdf"));
 
@@ -35,6 +37,7 @@ public class CreatePDF {
             document.add(chunk);
             document.close();
         } catch (FileNotFoundException ex) {
+            System.out.println("Found an exception");
             Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

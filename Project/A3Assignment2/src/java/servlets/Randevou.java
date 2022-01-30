@@ -6,6 +6,7 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.itextpdf.text.DocumentException;
 import database.tables.EditDoctorTable;
 import database.tables.EditRandevouzTable;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import mainClasses.CreatePDF;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
@@ -63,6 +65,8 @@ public class Randevou extends HttpServlet {
             Doctor d = edt.databaseToDoctorUsername(username);
             ArrayList<Randevouz> r = new ArrayList<Randevouz>();
             String day = request.getParameter("day");
+            String p = request.getParameter("p");
+            System.out.println(p);
             System.out.println(day);
             if (day.equals("0")) {
                 r = ert.databaseToRandevouzs(d.getDoctor_id());
@@ -76,6 +80,16 @@ public class Randevou extends HttpServlet {
                 System.out.println(json);
                 out.println(json);
                 response.setStatus(200);
+                if (p.equals("1")) {
+                    System.out.println("mphke sto na kalesei create pdf");
+                    CreatePDF pdf = new CreatePDF();
+                     try {
+                        pdf.create(r);
+                    } catch (DocumentException ex) {
+                        Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
             } else {
                 out.println("You have no appointments!");
                 response.setStatus(404);
@@ -154,13 +168,6 @@ public class Randevou extends HttpServlet {
             if (r.getStatus().equals("cancelled")) {
                 response.setStatus(403);
                 out.println("Appointment was canceled!");
-                //CreatePDF pdf = new CreatePDF();
-                /* try {
-                    pdf.create();
-                } catch (DocumentException ex) {
-                    Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
-
             } else {
                 if (newstatus.equals("done") && r.getUser_id() == 0) {
                     response.setStatus(403);
