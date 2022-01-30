@@ -174,7 +174,7 @@ public class Randevou extends HttpServlet {
                 if (newstatus.equals("done") && r.getUser_id() == 0) {
                     response.setStatus(403);
                     out.println("User hasn't come!");
-                } else if (newstatus.equals("done") && r.getUser_id() != 0) {
+                } else if (r.getStatus().equals("done") && r.getUser_id() != 0) {
                     int userid = r.getUser_id();
                     EditSimpleUserTable esut = new EditSimpleUserTable();
                     SimpleUser su = esut.databaseToSimpleUserUserID(userid);

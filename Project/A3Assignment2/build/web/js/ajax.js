@@ -273,6 +273,7 @@ function setChoicesForDoctor() {
     $("#choices").append("<h2>Choices:</h2>");
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
+    $("#choices").append("<button onclick='patientsGet()' class='button' >See Your Patients</button><br>");
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
     $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\")' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='appointmentsday()' class='button' >See Your Appointments For A Day</button><br>");
@@ -716,6 +717,7 @@ function modifyAppointment(r_id) {
     $("#ajaxContent").append("<button onclick='RandevouPut(\"cancelled\"," + r_id + ")'  class='button'>Cancel Appointment</button><br>");
 }
 
+//contains unimplemented function BloodtestGet()
 function RandevouPut(newstatus, r_id) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -725,9 +727,10 @@ function RandevouPut(newstatus, r_id) {
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
         } else if (xhr.status === 402) {
+            var amka = xhr.responseText;
             console.log("amka="+xhr.responseText);
             $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
-            //$("#ajaxContent").append("<button onclick='BloodtestGet("+xhr.responseText+")'  class='button'>See blood tests</button><br>");
+            $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -748,4 +751,55 @@ function day(){
     console.log(date);
     localStorage.setItem("date",date);
     RandevouGet(date,"0");
+}
+
+//gets users that had appointemts with the logged doctor.
+function patientsGet(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            $('#ajaxContent').html("<h2> Your Patients:</h2>");
+            $('#ajaxContent').append("<p>Press patient to see more.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), seeChoisesForPatient));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Patients');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+//contains unimplemented function BloodtestGet()
+//BloodtestGet() will contain (after succes if log="d"):
+//$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
+function seeChoisesForPatient(username){
+    $("#choices").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+}
+
+
+function treatmentform(username){
+    
+}
+
+function treatmentsPost(username){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            $('#ajaxContent').html("<h2> Your Patients:</h2>");
+            $('#ajaxContent').append("<p>Press patient to see more.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), seeChoisesForPatient));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('POST', 'Treatments?username='+username);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
 }
