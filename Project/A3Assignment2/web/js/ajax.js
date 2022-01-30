@@ -43,7 +43,11 @@ function createTablesFromJSON(data, action) {
             if (action === "modifyAppointment") {
                 html += "<button class='block' value='" + data[i].randevouz_id + "' onclick='" + action + "(this.value)'>";
             } else if(action === "messageReply"){
-                html += "<button class='block' value='" + data[i].user_id + "' onclick='" + action + "(this.value)'>";
+                if(log==="d"){
+                    html += "<button class='block' value='" + data[i].user_id + "' onclick='" + action + "(this.value)'>";
+                }else{
+                    html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
+                }
             }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
             }
@@ -854,10 +858,11 @@ function messegesGet(){
 }
 
 function messageReply(r_id){
+    console.log(JSON.stringify(r_id));
     $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='dataGet2("+r_id+");return false;'><input type='text' id='message' name='message' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
 }
 
-function messegesPost(r_id,s_id,blood_donation,bloodtype,date_time){
+function messegesPost(r_id,s_id,date_time){
     let myForm = document.getElementById('form_reply');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
@@ -874,17 +879,18 @@ function messegesPost(r_id,s_id,blood_donation,bloodtype,date_time){
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
     if(log==="d"){
-        data["user_id"] = r_id;
         data["sender"] = "doctor";
+        data["doctor_id"] = s_id;
+        data["user_id"] = r_id;
         
     }else{
-        data["doctor_id"] = r_id;
         data["sender"] = "user";
         data["user_id"] = s_id;
-        data["blood_donation"] = blood_donation;
-        data["bloodtype"] = bloodtype;
-        data["date_time"] = date_time;
+        data["doctor_id"] = r_id;
     }
+    //data["blood_donation"] = blood_donation;
+    //data["bloodtype"] = bloodtype;
+    data["date_time"] = date_time;
     console.log(data);
     for (const x in data) {
         var category = x;
@@ -903,11 +909,15 @@ function dataGet2(r_id) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
-            var s_id = responseData.user_id;
-            var blood_donation = responseData.blooddonor;
-            var bloodtype = responseData.bloodtype;
+            if(log==="d"){
+                var s_id = responseData.doctor_id;
+            }else{
+                var s_id = responseData.user_id;
+                var blood_donation = responseData.blooddonor;
+                var bloodtype = responseData.bloodtype;
+            }
             console.log(r_id);
-            console.log(s_id);
+            //console.log(s_id);
             console.log(blood_donation);
             console.log(bloodtype);
             var currentdate = new Date();
@@ -929,7 +939,7 @@ function dataGet2(r_id) {
                 mins = "0" + mins;
             }
             var date_time = currentdate.getFullYear() + "-" + month + "-" + datee + " " + hours +":"+mins+":00";
-            messegesPost(r_id, s_id, blood_donation, bloodtype,date_time);
+            messegesPost(r_id,s_id,date_time);
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }

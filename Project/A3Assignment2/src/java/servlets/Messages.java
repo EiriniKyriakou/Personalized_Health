@@ -119,16 +119,23 @@ public class Messages extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        EditSimpleUserTable esut = new EditSimpleUserTable();
         System.out.println("mphke post msg");
         JSON_Converter jc = new JSON_Converter();
         System.out.println("ti phre: " + request.getReader());
         Message m = jc.jsonToMessage(request.getReader());
+        try {
+            SimpleUser su = esut.databaseToSimpleUserUserID(m.getUser_id());
+            m.setBlood_donation(su.getBlooddonor());
+            m.setBloodtype(su.getBloodtype());
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Messages.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("m:" + m);
         String JsonString = jc.messageToJSON(m);
         System.out.println("jsonstring " + JsonString);
         EditRandevouzTable ert = new EditRandevouzTable();
         EditDoctorTable edt = new EditDoctorTable();
-        EditSimpleUserTable esut = new EditSimpleUserTable();
         EditMessageTable emt = new EditMessageTable();
         if (ert.databaseToRandevouz(m.getDoctor_id(), m.getUser_id())) {
             try {
