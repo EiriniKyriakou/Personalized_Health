@@ -69,7 +69,7 @@ public class Data extends HttpServlet {
                 String json = eut.simpleUserToJSON(su);
                 out.println(json);
                 response.setStatus(200);
-            } else if (edt != null) {
+            } else if (d != null) {
                 String json = edt.doctorToJSON(d);
                 out.println(json);
                 response.setStatus(200);

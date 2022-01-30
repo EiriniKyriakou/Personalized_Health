@@ -724,6 +724,10 @@ function RandevouPut(newstatus, r_id) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
+            if(newsstatus === "done"){
+                $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
+                seeChoisesForPatient();
+            }
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
         } else if (xhr.status === 402) {
@@ -731,6 +735,7 @@ function RandevouPut(newstatus, r_id) {
             console.log("amka="+xhr.responseText);
             $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
             $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
+            seeChoisesForPatient();
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -741,7 +746,7 @@ function RandevouPut(newstatus, r_id) {
 }
 
 function appointmentsday(){
-    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>");
+    $('#ajaxContent').append("<h3>Choose the day that you want to see</h3>");
     $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
     //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
 }
@@ -759,9 +764,10 @@ function patientsGet(){
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2> Your Patients:</h2>");
             $('#ajaxContent').append("<p>Press patient to see more.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), seeChoisesForPatient));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, null));
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
         } else if (xhr.status !== 200) {
@@ -777,15 +783,19 @@ function patientsGet(){
 //BloodtestGet() will contain (after succes if log="d"):
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 function seeChoisesForPatient(username){
-    $("#choices").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+    $("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+    $("#ajaxContent").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 }
 
 
 function treatmentform(username){
-    
+    $("#ajaxContent").load("treatmentform.html");
+    id = docID();
 }
 
 function treatmentsPost(username){
+    let myForm = document.getElementById('form_treat');
+    let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -799,6 +809,15 @@ function treatmentsPost(username){
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
+    const data = {};
+    formData.forEach((value, key) => (data[key] = value));
+    data["bloodtest_id"] = 0;
+    data["doctor_id"] = id;
+    for (const x in data) {
+        var category = x;
+        var value = data[x];
+        console.log(category+ " " +value);
+    }
     xhr.open('POST', 'Treatments?username='+username);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
