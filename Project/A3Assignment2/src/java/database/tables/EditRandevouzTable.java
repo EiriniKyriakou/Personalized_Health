@@ -215,4 +215,21 @@ public class EditRandevouzTable {
         }
         return null;
     }
+
+    public boolean databaseToRandevouz(int doctor_id, int user_id) {
+        try {
+            Connection con = DB_Connection.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE doctor_id= '" + doctor_id + "' AND user_id='" + user_id + "' AND status='done'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Randevouz bt = gson.fromJson(json, Randevouz.class);
+            return true;
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(EditRandevouzTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 }

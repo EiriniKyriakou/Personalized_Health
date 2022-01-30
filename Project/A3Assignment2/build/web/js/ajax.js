@@ -23,7 +23,7 @@ function createTableFromJSON(data) {
     for (const x in data) {
         var category = x;
         if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
-                && category !== "lat" && category !== "lon") {
+                && category !== "lat" && category !== "lon" && category !== "message_id") {
             var value = data[x];
             html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
         }
@@ -42,7 +42,9 @@ function createTablesFromJSON(data, action) {
         if (action !== null) {
             if (action === "modifyAppointment") {
                 html += "<button class='block' value='" + data[i].randevouz_id + "' onclick='" + action + "(this.value)'>";
-            } else {
+            } else if(action === "messageReply"){
+                html += "<button class='block' value='" + data[i].user_id + "' onclick='" + action + "(this.value)'>";
+            }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
             }
         }
@@ -50,7 +52,7 @@ function createTablesFromJSON(data, action) {
         for (const x in data[i]) {
             var category = x;
             if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" &&*/ category !== "doctor_id"
-                    && category !== "lat" && category !== "lon") {
+                    && category !== "lat" && category !== "lon" && category !== "message_id") {
                 var value = data[i][x];
                 html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
             }
@@ -277,6 +279,7 @@ function setChoicesForDoctor() {
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
     $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\")' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='appointmentsday()' class='button' >See Your Appointments For A Day</button><br>");
+    $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
     $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
@@ -821,4 +824,65 @@ function treatmentsPost(username){
     xhr.open('POST', 'Treatments?username='+username);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
+}
+
+function messegesGet(){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            $('#ajaxContent').html("<h2> Your Messeges:</h2>");
+            $('#ajaxContent').append("<p>Press messege to reply.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "messageReply"));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'> You don't have any messeges!</p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Messages');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+function messageReply(r_id){
+    $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='messegesPost("+r_id+");return false;'><input type='text' id='reply_text' name='reply_text' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
+}
+
+function messegesPost(r_id){
+    let myForm = document.getElementById('form_reply');
+    let formData = new FormData(myForm);
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            $('#ajaxContent').html("<h2> Your Messeges:</h2>");
+            $('#ajaxContent').append("<p>Press messege to reply.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "messageReply"));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'> You don't have any messeges!</p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    const data = {};
+    formData.forEach((value, key) => (data[key] = value));
+    if(log==="d"){
+        data["user_id"] = r_id;
+        data["sender"] = "doctor";
+        
+    }else{
+        data["doctor_id"] = r_id;
+        data["sender"] = "user";
+    }
+    for (const x in data) {
+        var category = x;
+        var value = data[x];
+        console.log(category+ " " +value);
+    }
+    //xhr.open('POST', 'Messages');
+    //xhr.setRequestHeader("Content-type", "application/json");
+    //xhr.send();
 }

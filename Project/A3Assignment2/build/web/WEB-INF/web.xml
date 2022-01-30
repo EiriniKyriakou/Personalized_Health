@@ -44,6 +44,10 @@
         <servlet-name>Patients</servlet-name>
         <servlet-class>servlets.Patients</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Messages</servlet-name>
+        <servlet-class>servlets.Messages</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>Patients</servlet-name>
         <url-pattern>/Patients</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Messages</servlet-name>
+        <url-pattern>/Messages</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
