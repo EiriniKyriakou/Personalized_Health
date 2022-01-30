@@ -723,7 +723,7 @@ function RandevouPut(newstatus, r_id) {
 }
 
 function appointmentsday(){
-    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>")
+    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>");
     $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
     //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
 }
