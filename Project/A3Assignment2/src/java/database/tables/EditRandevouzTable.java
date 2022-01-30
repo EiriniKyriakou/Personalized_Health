@@ -189,4 +189,30 @@ public class EditRandevouzTable {
         }
         return null;
     }
+
+    public ArrayList<Randevouz> databaseToRandevouzs(int doctor_id, String date) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Randevouz> randevouzs = new ArrayList<Randevouz>();
+        ResultSet rs;
+        String date2 = date.substring(0, date.length() - 1);
+        int last = Integer.parseInt(String.valueOf(date.charAt(date.length() - 1))) + 1;
+        date2 += Integer.toString(last);
+        System.out.println(date);
+        System.out.println(date2);
+        try {
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE doctor_id= '" + doctor_id + "' AND date_time>'" + date + "' AND date_time<'" + date2 + "'");
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Randevouz r = gson.fromJson(json, Randevouz.class);
+                randevouzs.add(r);
+            }
+            return randevouzs;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
 }

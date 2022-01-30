@@ -274,7 +274,8 @@ function setChoicesForDoctor() {
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
-    $("#choices").append("<button onclick='RandevouGet()' class='button' >See All Your Appointments</button><br>");
+    $("#choices").append("<button onclick='RandevouGet(\"0\")' class='button' >See All Your Appointments</button><br>");
+    $("#choices").append("<button onclick='appointmentsday()' class='button' >See Your Appointments For A Day</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
     $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
@@ -677,20 +678,24 @@ function docID() {
     xhr.send();
 }
 
-function RandevouGet() {
+function RandevouGet(day) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>Your Appointments</h2>");
-            $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData, "modifyAppointment"));
+            if (day==='0'){
+                $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
+                $('#ajaxContent').append(createTablesFromJSON(responseData, "modifyAppointment"));
+            }else{
+                $('#ajaxContent').append(createTablesFromJSON(responseData, null));
+            }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    xhr.open('GET', 'Randevou');
+    xhr.open('GET', 'Randevou?day='+day);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -715,4 +720,16 @@ function RandevouPut(newstatus, r_id) {
     xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
+}
+
+function appointmentsday(){
+    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>")
+    $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
+    //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
+}
+
+function day(){
+    var date = document.getElementById("date").value.toString();
+    console.log(date);
+    RandevouGet(date);
 }

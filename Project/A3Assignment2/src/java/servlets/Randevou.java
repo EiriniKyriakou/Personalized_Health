@@ -63,7 +63,14 @@ public class Randevou extends HttpServlet {
             EditDoctorTable edt = new EditDoctorTable();
             Doctor d = edt.databaseToDoctorUsername(username);
             ArrayList<Randevouz> r = new ArrayList<Randevouz>();
-            r = ert.databaseToRandevouzs(d.getDoctor_id());
+            String day = request.getParameter("day");
+            System.out.println(day);
+            if (day.equals("0")) {
+                r = ert.databaseToRandevouzs(d.getDoctor_id());
+            } else {
+                System.out.println("mphke gia get rantevou by day");
+                r = ert.databaseToRandevouzs(d.getDoctor_id(), day);
+            }
             if (r != null) {
                 Gson gson = new Gson();
                 String json = gson.toJson(r);
