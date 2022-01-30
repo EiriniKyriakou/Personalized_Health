@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.itextpdf.text.DocumentException;
 import database.tables.EditDoctorTable;
 import database.tables.EditRandevouzTable;
+import database.tables.EditSimpleUserTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -24,6 +25,7 @@ import mainClasses.CreatePDF;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
+import mainClasses.SimpleUser;
 
 /**
  *
@@ -172,6 +174,12 @@ public class Randevou extends HttpServlet {
                 if (newstatus.equals("done") && r.getUser_id() == 0) {
                     response.setStatus(403);
                     out.println("User hasn't come!");
+                } else if (newstatus.equals("done") && r.getUser_id() != 0) {
+                    int userid = r.getUser_id();
+                    EditSimpleUserTable esut = new EditSimpleUserTable();
+                    SimpleUser su = esut.databaseToSimpleUserUserID(userid);
+                    out.println(su.getAmka());
+                    response.setStatus(402);
                 } else {
                     ert.updateRandevouz(r_id, newstatus);
                     out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");

@@ -724,6 +724,10 @@ function RandevouPut(newstatus, r_id) {
             $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
+        } else if (xhr.status === 402) {
+            console.log("amka="+xhr.responseText);
+            $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
+            //$("#ajaxContent").append("<button onclick='BloodtestGet("+xhr.responseText+")'  class='button'>See blood tests</button><br>");
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
