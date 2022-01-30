@@ -7,14 +7,14 @@ var mapp = 0;
 
 //show-hide password
 function Visible() {
-  var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-    document.getElementById("sp").value = "Hide Password";
-  } else {
-    x.type = "password";
-    document.getElementById("sp").value = "Show Password";
-  }
+    var x = document.getElementById("password");
+    if (x.type === "password") {
+        x.type = "text";
+        document.getElementById("sp").value = "Hide Password";
+    } else {
+        x.type = "password";
+        document.getElementById("sp").value = "Show Password";
+    }
 }
 
 //print's a table of a simple json 
@@ -23,7 +23,7 @@ function createTableFromJSON(data) {
     for (const x in data) {
         var category = x;
         if (category !== "password" && category !== "randevouz_id" && category !== "user_id" && category !== "doctor_id"
-                    && category !== "lat" && category !== "lon"){
+                && category !== "lat" && category !== "lon") {
             var value = data[x];
             html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
         }
@@ -35,18 +35,22 @@ function createTableFromJSON(data) {
 
 //print's a table of a complex json 
 //and adds an action (delete or certify) if action!=null
-function createTablesFromJSON(data,action) {
+function createTablesFromJSON(data, action) {
     var size = Object.keys(data).length;
     var html = "";
     for (let i = 0; i < size; i++) {
-        if (action!=null){
-            html += "<button class='block' value='" + data[i].username + "' onclick='" + action +"(this.value)'>";
+        if (action !== null) {
+            if (action === "modifyAppointment") {
+                html += "<button class='block' value='" + data[i].randevouz_id + "' onclick='" + action + "(this.value)'>";
+            } else {
+                html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
+            }
         }
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         for (const x in data[i]) {
             var category = x;
             if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" &&*/ category !== "doctor_id"
-                    && category !== "lat" && category !== "lon"){
+                    && category !== "lat" && category !== "lon") {
                 var value = data[i][x];
                 html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
             }
@@ -79,16 +83,16 @@ function createTableFromJSONmap(data) {
         return position;
     }
     /*
-    function handler(position, message) {
-        var popup = new OpenLayers.Popup.FramedCloud("Popup",
-                position, null,
-                message, null,
-                true // <-- true if we want a close (X) button, false otherwise
-                );
-        map.addPopup(popup);
-        console.log('Energopoihthike');
-    }
-    */
+     function handler(position, message) {
+     var popup = new OpenLayers.Popup.FramedCloud("Popup",
+     position, null,
+     message, null,
+     true // <-- true if we want a close (X) button, false otherwise
+     );
+     map.addPopup(popup);
+     console.log('Energopoihthike');
+     }
+     */
     //Markers
     var markers = new OpenLayers.Layer.Markers("Markers");
     map.addLayer(markers);
@@ -103,13 +107,13 @@ function createTableFromJSONmap(data) {
         html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
         html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
         html += "</table><br>";
-        var position=setPosition(data[i].lat,data[i].lon);
+        var position = setPosition(data[i].lat, data[i].lon);
         pos = position;
-        var mar=new OpenLayers.Marker(position);
+        var mar = new OpenLayers.Marker(position);
         markers.addMarker(mar);
-        var msg = data[i].firstname+' '+data[i].lastname;
+        var msg = data[i].firstname + ' ' + data[i].lastname;
         //mar.events.register(true, mar, function(evt){handler(position, msg);});
-        console.log(data[i].firstname+' '+data[i].lastname);
+        console.log(data[i].firstname + ' ' + data[i].lastname);
     }
     //Orismos zoom
     const zoom = 11;
@@ -119,7 +123,7 @@ function createTableFromJSONmap(data) {
 }
 
 function isLoggedIn() {
-    mapp=0;
+    mapp = 0;
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -143,9 +147,10 @@ function isLoggedIn() {
     };
     log = localStorage.getItem("log");
     console.log(log);
-    if(log === "d"){
+    if (log === "d") {
         xhr.open('GET', 'DoctorLogin');
-    }else{;
+    } else {
+        ;
         xhr.open('GET', 'Login');
     }
     xhr.send();
@@ -218,15 +223,15 @@ function loginPost() {
             current_user = null;
             localStorage.setItem("current_user", current_user);
         } else if (xhr.status === 406) {
-            if (log === 'd'){
+            if (log === 'd') {
                 $("#ajaxContent").html("Cannot Login wait to be certified.");
-            }else{
+            } else {
                 $("#ajaxContent").html("Login as Simple User.");
             }
             $('#choices').load("logins.html");
             current_user = null;
             localStorage.setItem("current_user", current_user);
-        }else if (xhr.status !== 200) {
+        } else if (xhr.status !== 200) {
             $("#ajaxContent").html("User does not exists!");
             current_user = null;
             localStorage.setItem("current_user", current_user);
@@ -235,14 +240,14 @@ function loginPost() {
     var data = $('#loginForm').serialize();
     current_user = document.getElementById('username').value;
     if (log === "a") {
+        console.log("mphke login log=a");
         xhr.open('Post', 'AdminLogin');
-        //console.log("mphke login log=a");
     } else if (log === "su") {
+        console.log("mphke login log = su!");
         xhr.open('Post', 'Login');
-        //console.log("mphke login log = su!");
     } else {
-        //console.log("mphke login log=d");
-        xhr.open('POST','DoctorLogin');
+        console.log("mphke login log=d");
+        xhr.open('POST', 'DoctorLogin');
     }
     xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhr.send(data);
@@ -516,7 +521,7 @@ function uncertifiedDoctorsGet() {
             console.log(responseData);
             $('#ajaxContent').html("<h2>Uncertified Doctors:</h2>");
             $('#ajaxContent').append("<p>Press a doctor's table to certify</p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData,"certifiedPut"));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "certifiedPut"));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -535,7 +540,7 @@ function allUsersGet() {
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>All Users:</h2>");
             $('#ajaxContent').append("<p>Press a user's table to delete</p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData,"showDelete"));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "showDelete"));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -585,69 +590,37 @@ function certifiedPut(username) {
 }
 
 //loads randevou from
-function creatRandevou(){
+function creatRandevou() {
+    var currentdate = new Date();
+    var month = (currentdate.getMonth() + 1);
+    var datee = currentdate.getDate();
+    var hours = currentdate.getHours();
+    if (currentdate.getMonth() + 1 < 10) {
+        month = "0" + month;
+    }
+    if (currentdate.getDate() < 10) {
+        datee = "0" + datee;
+    }
+    if (currentdate.getHours() < 10) {
+        hours = "0" + hours;
+    }
+    $('#ajaxContent').html("");
     id = docID();
-    /*
-    var currentdate = new Date(); 
-    var mindatetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear();
-    var maxdatetime = currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + (currentdate.getFullYear()+1);
-    //console.log(datetime);
-    $("#choices").html("");
-    $("#choices").append('<form id="form_randevou" name="form_randevou" onsubmit="RandevouPost();return false;">');
-    $("#choices").append('<label for="date_time">Date:</label> <br>');
-    $("#choices").append('<input type="date" id="date" name="date" onchange="righttime()" placeholder="date_time.." min='+mindatetime+' max='+maxdatetime+' title="Must start :00 or :30"required><br>');
-    $("#choices").append('<label for="appt">Time:</label> <br>');
-    $("#choices").append('<input type="time" id="appt" name="appt" step="1800000 onchange="righttime()" required><br> ');
-    $("#choices").append('<label for="appt">Date and Time:</label> <br>');
-    $("#choices").append('<input  id="date_time" name="date_time"  required><br>');
-    $("#choices").append('<label for="appt">Price:</label> <br>');
-    $("#choices").append('<input  type="number" id="price" name="price" min=0 required><br>');
-    $("#choices").append('<label for="appt">Doctor Info:</label> <br>');
-    $("#choices").append('<input  type="text" id="doctor_info" name="doctor_info"  required><br>');
-    $("#choices").append('<input type="submit" class="button" value="Create!"> <br><br>');
-    $("#choices").append('</form>');*/
-    
     $("#choices").load("RandevouForm.html");
+    var min = currentdate.getFullYear() + "-" + month + "-" + datee;
+    var input = document.getElementById("date")
+    input.setAttribute("min", min);
 }
 
 //checks if randevou date time is in the past
-function righttime(){
-    var currentdate = new Date();
-    var month = (currentdate.getMonth()+1);
-    var datee = currentdate.getDate() ;
-    var hours = currentdate.getHours();
-    var mins = currentdate.getMinutes()
-    var date = document.getElementById("date").value.toString() + " " + document.getElementById("appt").value.toString()+":00";
-    if (currentdate.getMonth()+1 < 10){
-        month = "0"+month;
-    }
-    if (currentdate.getDate() < 10){
-        datee = "0"+datee;
-    }
-    if (currentdate.getMinutes() < 10){
-        mins = "0"+mins;
-    }
-    if (currentdate.getHours() < 10){
-        hours = "0"+hours;
-    }
-    var datetime =currentdate.getFullYear() + "-"+ month+"-" + datee + " " + hours+ ":" +mins+":00";
-        console.log(date);
-        console.log(datetime);
-    if (date < datetime){
-        $("#ajaxContent").html('Choose future time!');
-    }else{
-        $("#ajaxContent").html('The date is okay!');
-        document.getElementById("date_time").value = date;
-        
-    }
+function righttime() {
+    var date = document.getElementById("date").value.toString() + " " + document.getElementById("appt").value.toString() + ":00";
+    console.log(date);
+    document.getElementById("date_time").value = date;
 }
 
 //creates randevou
-function RandevouPost(){
+function RandevouPost() {
     let myForm = document.getElementById('form_randevou');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
@@ -655,10 +628,13 @@ function RandevouPost(){
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
-                $('#ajaxContent').html("Successfully created!<br>");
+            $('#ajaxContent').html("Successfully created!<br>");
+        } else if (xhr.status === 404) {
+            $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
+            $('#ajaxContent').append(xhr.responseText + "<br>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-                $('#ajaxContent').append("<p style='color:red'>"  + xhr.responseText + "</p>");
+            $('#ajaxContent').append("<p style='color:red'>" + xhr.responseText + "</p>");
         }
     };
     const data = {};
@@ -679,7 +655,7 @@ function RandevouPost(){
 
 //GET Data.java
 //gets doctors ID
-function docID(){
+function docID() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -687,7 +663,7 @@ function docID(){
             const responseData = JSON.parse(xhr.responseText);
             //$('#ajaxContent').append(createTableFromJSON(responseData));
             for (const x in responseData) {
-                if(x === "doctor_id"){
+                if (x === "doctor_id") {
                     console.log(responseData[x]);
                     id = responseData[x];
                 }
@@ -701,19 +677,42 @@ function docID(){
     xhr.send();
 }
 
-function RandevouGet(){
+function RandevouGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>Your Appointments</h2>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData,null));
+            $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "modifyAppointment"));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
     xhr.open('GET', 'Randevou');
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+function modifyAppointment(r_id) {
+    $("#ajaxContent").html("<button onclick='RandevouPut(\"done\"," + r_id + ")'  class='button'>Change status to Done Appointment</button><br>");
+    $("#ajaxContent").append("<button onclick='RandevouPut(\"cancelled\"," + r_id + ")'  class='button'>Cancel Appointment</button><br>");
+}
+
+function RandevouPut(newstatus, r_id) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }

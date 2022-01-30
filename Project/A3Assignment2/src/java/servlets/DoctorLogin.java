@@ -107,6 +107,7 @@ public class DoctorLogin extends HttpServlet {
                 }
                 request.getServletContext().setAttribute("activeUsers", activeUsers + 1);
                 String json = edt.doctorToJSON(d);
+                System.out.println(json);
                 out.println(d.getUsername());
                 response.setStatus(200);
             } else if (d.getCertified() == 0) {

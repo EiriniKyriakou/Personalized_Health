@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import mainClasses.CreatePDF;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
@@ -30,7 +31,7 @@ import mainClasses.Randevouz;
 public class Randevou extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> and <code>PUT</code>methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -70,7 +71,7 @@ public class Randevou extends HttpServlet {
                 out.println(json);
                 response.setStatus(200);
             } else {
-                out.println("404. You have no appointments!");
+                out.println("You have no appointments!");
                 response.setStatus(404);
             }
         } catch (SQLException ex) {
@@ -125,6 +126,42 @@ public class Randevou extends HttpServlet {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try (PrintWriter out = response.getWriter()) {
+            System.out.println("mphke put randevou");
+            String newstatus = request.getParameter("newstatus");
+            int r_id = Integer.parseInt(request.getParameter("r_id"));
+            EditRandevouzTable ert = new EditRandevouzTable();
+            Randevouz r = ert.databaseToRandevouz(r_id);
+            if (r.getStatus().equals("cancelled")) {
+                response.setStatus(403);
+                out.println("Appointment was canceled!");
+                CreatePDF pdf = new CreatePDF();
+                /* try {
+                    pdf.create();
+                } catch (DocumentException ex) {
+                    Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
+                }*/
+
+            } else {
+                ert.updateRandevouz(r_id, newstatus);
+                out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
+                response.setStatus(200);
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
