@@ -609,7 +609,7 @@ function creatRandevou() {
     id = docID();
     $("#choices").load("RandevouForm.html");
     var min = currentdate.getFullYear() + "-" + month + "-" + datee;
-    var input = document.getElementById("date")
+    var input = document.getElementById("date");
     input.setAttribute("min", min);
 }
 

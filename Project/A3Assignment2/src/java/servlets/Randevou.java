@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import mainClasses.CreatePDF;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
@@ -155,7 +154,7 @@ public class Randevou extends HttpServlet {
             if (r.getStatus().equals("cancelled")) {
                 response.setStatus(403);
                 out.println("Appointment was canceled!");
-                CreatePDF pdf = new CreatePDF();
+                //CreatePDF pdf = new CreatePDF();
                 /* try {
                     pdf.create();
                 } catch (DocumentException ex) {
@@ -163,9 +162,14 @@ public class Randevou extends HttpServlet {
                 }*/
 
             } else {
-                ert.updateRandevouz(r_id, newstatus);
-                out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
-                response.setStatus(200);
+                if (newstatus.equals("done") && r.getUser_id() == 0) {
+                    response.setStatus(403);
+                    out.println("User hasn't come!");
+                } else {
+                    ert.updateRandevouz(r_id, newstatus);
+                    out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
+                    response.setStatus(200);
+                }
             }
         } catch (SQLException | ClassNotFoundException ex) {
             Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
