@@ -64,37 +64,48 @@ public class Randevou extends HttpServlet {
             String username = session.getAttribute("loggedIn").toString();
             EditRandevouzTable ert = new EditRandevouzTable();
             EditDoctorTable edt = new EditDoctorTable();
+            EditSimpleUserTable esut = new EditSimpleUserTable();
             Doctor d = edt.databaseToDoctorUsername(username);
+            SimpleUser su = esut.databaseToSimpleUserUsername(username);
             ArrayList<Randevouz> r = new ArrayList<Randevouz>();
-            String day = request.getParameter("day");
-            String p = request.getParameter("p");
-            System.out.println(p);
-            System.out.println(day);
-            if (day.equals("0")) {
-                r = ert.databaseToRandevouzs(d.getDoctor_id());
-            } else {
-                System.out.println("mphke gia get rantevou by day");
-                r = ert.databaseToRandevouzs(d.getDoctor_id(), day);
-            }
-            if (r != null) {
+            if (su != null) {
+                r = ert.databaseToUserRandevouzs(su.getUser_id());
                 Gson gson = new Gson();
                 String json = gson.toJson(r);
                 System.out.println(json);
                 out.println(json);
                 response.setStatus(200);
-                if (p.equals("1")) {
-                    System.out.println("mphke sto na kalesei create pdf");
-                    CreatePDF pdf = new CreatePDF();
-                     try {
-                        pdf.create(r);
-                    } catch (DocumentException ex) {
-                        Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-
             } else {
-                out.println("You have no appointments!");
-                response.setStatus(404);
+                String day = request.getParameter("day");
+                String p = request.getParameter("p");
+                System.out.println(p);
+                System.out.println(day);
+                if (day.equals("0")) {
+                    r = ert.databaseToRandevouzs(d.getDoctor_id());
+                } else {
+                    System.out.println("mphke gia get rantevou by day");
+                    r = ert.databaseToRandevouzs(d.getDoctor_id(), day);
+                }
+                if (r != null) {
+                    Gson gson = new Gson();
+                    String json = gson.toJson(r);
+                    System.out.println(json);
+                    out.println(json);
+                    response.setStatus(200);
+                    if (p.equals("1")) {
+                        System.out.println("mphke sto na kalesei create pdf");
+                        CreatePDF pdf = new CreatePDF();
+                        try {
+                            pdf.create(r);
+                        } catch (DocumentException ex) {
+                            Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                } else {
+                    out.println("You have no appointments!");
+                    response.setStatus(404);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
@@ -173,7 +184,7 @@ public class Randevou extends HttpServlet {
             if (r.getStatus().equals("cancelled")) {
                 System.out.println("megalh if");
                 response.setStatus(403);
-                out.println("Appointment was canceled!");
+                out.println("Appointment is already canceled!");
             } else {
                 System.out.println("megalh else");
                 if (newstatus.equals("done") && r.getUser_id() == 0) {

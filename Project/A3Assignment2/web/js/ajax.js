@@ -57,8 +57,8 @@ function createTablesFromJSON(data, action) {
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         for (const x in data[i]) {
             var category = x;
-            if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" &&*/ category !== "doctor_id"
-                    && category !== "lat" && category !== "lon" && category !== "message_id") {
+            if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" && category !== "doctor_id"
+                    && */category !== "lat" && category !== "lon" && category !== "message_id") {
                 var value = data[i][x];
                 html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
             }
@@ -74,7 +74,7 @@ function createTablesFromJSON(data, action) {
 }
 
 //print doctors and in map (guest)
-function createTableFromJSONmap(data) {
+function createTableFromJSONmap(data,action) {
     var count = Object.keys(data).length;
     console.log(count);
     var html = "<p>Press doctor's table to send a message";
@@ -111,7 +111,9 @@ function createTableFromJSONmap(data) {
     map.addLayer(markers);
 
     for (var i = 0; i < count; i++) {
-        html += "<button class='block' value='" + data[i].doctor_id + "' onclick='messageReply(this.value)'>";
+        if(action!=null){
+            html += "<button class='block' value='" + data[i].doctor_id + "' onclick='"+action+"(this.value)'>";
+        }
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
         html += "<tr><td> Last Name </td><td>" + data[i].lastname + "</td></tr>";
@@ -121,7 +123,11 @@ function createTableFromJSONmap(data) {
         html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
         html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
         html += "</table>";
-        html += "</buttom><br><br>";
+        if(action!=null){
+            html += "</buttom><br><br>";
+        }else{
+            html += "<br>";
+        }
         var position = setPosition(data[i].lat, data[i].lon);
         pos = position;
         var mar = new OpenLayers.Marker(position);
@@ -281,6 +287,7 @@ function setChoicesForLoggedUser() {
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
     $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors(message)</button><br>");
     $("#choices").append("<button onclick='certifiedDoctorsGet(1)'  class='button'>See Doctors (for appointments)</button><br>");
+    $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\",\"modifyAppointment\")' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges!</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
@@ -298,7 +305,6 @@ function setChoicesForDoctor() {
     $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
 }
@@ -528,7 +534,11 @@ function certifiedDoctorsGet(ap) {
             }else{
                 $('#ajaxContent').append('<div id="Map" style="height:300px; width:100%"></div>');
                 $('#ajaxContent').append("<div id='divID'></div>");
-                $('#ajaxContent').append(createTableFromJSONmap(responseData));
+                if(log==="su"){
+                    $('#ajaxContent').append(createTableFromJSONmap(responseData,"messageReply"));
+                }else{
+                    $('#ajaxContent').append(createTableFromJSONmap(responseData,null));
+                }
             }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -763,7 +773,9 @@ function RandevouPut(newstatus, r_id) {
             console.log("amka="+xhr.responseText);
             $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
             $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
-            seeChoisesForPatient();
+            if(log==="d"){
+                seeChoisesForPatient();
+            }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -783,7 +795,7 @@ function RandevouPut(newstatus, r_id) {
 }
 
 function appointmentsday(){
-    $('#ajaxContent').append("<h3>Choose the day that you want to see</h3>");
+    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>");
     $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
     //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
 }
@@ -804,7 +816,7 @@ function patientsGet(){
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2> Your Patients:</h2>");
             $('#ajaxContent').append("<p>Press patient to see more.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData, null));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "seeChoisesForPatient"));
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
         } else if (xhr.status !== 200) {
@@ -820,8 +832,8 @@ function patientsGet(){
 //BloodtestGet() will contain (after succes if log="d"):
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 function seeChoisesForPatient(username){
-    $("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
-    $("#ajaxContent").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
+        $("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+        $("#ajaxContent").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 }
 
 function treatmentform(username){
