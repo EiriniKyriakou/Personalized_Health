@@ -40,7 +40,7 @@ function createTablesFromJSON(data, action) {
     var html = "";
     for (let i = 0; i < size; i++) {
         if (action !== null) {
-            if (action === "modifyAppointment") {
+            if (action === "modifyAppointment" || action === "userAppointment") {
                 html += "<button class='block' value='" + data[i].randevouz_id + "' onclick='" + action + "(this.value)'>";
             } else if(action === "messageReply"){
                 if(log==="d"){
@@ -48,6 +48,8 @@ function createTablesFromJSON(data, action) {
                 }else{
                     html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
                 }
+            }else if (action ==="userRandevouzGet"){
+                html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
             }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
             }
@@ -61,9 +63,11 @@ function createTablesFromJSON(data, action) {
                 html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
             }
         }
-        html += "</table><br>";
+        html += "</table>";
         if (action !== null){
-            html += "</buttom><br>";
+            html += "</buttom><br><br>";
+        }else{
+            html += "<br>";
         }
     }
     return html;
@@ -200,7 +204,7 @@ function guestLogin() {
     $("#choices").html("");
     document.getElementById("title").innerHTML = "Guest";
     $("#choices").append("<h2>Choices:</h2>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='userLogin()' class='button' >Loggin as Simple User</button><br>");
     $("#choices").append("<a class='button' target='_blank' href='http://localhost:8080/A3-Assignment1'>Register</a><br>");
     $("#choices").append("<br><h2>Useful links:</h2>");
@@ -275,7 +279,8 @@ function setChoicesForLoggedUser() {
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors!</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors(message)</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet(1)'  class='button'>See Doctors (for appointments)</button><br>");
     $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges!</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
@@ -288,12 +293,12 @@ function setChoicesForDoctor() {
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='patientsGet()' class='button' >See Your Patients</button><br>");
     $("#choices").append("<button onclick='creatRandevou()' class='button' >Creat Appointment</button><br>");
-    $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\")' class='button' >See All Your Appointments</button><br>");
+    $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\",\"modifyAppointment\")' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='appointmentsday()' class='button' >See Your Appointments For A Day</button><br>");
     $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 
 }
@@ -307,7 +312,7 @@ function setChoicesForAdmin() {
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+    $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 }
 
@@ -509,17 +514,22 @@ function getIdealWeight() {
     }
 }
 
-function certifiedDoctorsGet() {
+function certifiedDoctorsGet(ap) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
             $('#ajaxContent').html("<h2>Certified Doctors:</h2>");
-            $('#ajaxContent').append('<div id="Map" style="height:300px; width:100%"></div>');
-            $('#ajaxContent').append("<div id='divID'></div>");
-            $('#ajaxContent').append(createTableFromJSONmap(responseData));
-            // $("#myForm").hide();
+            if(ap===1){
+                console.log('Press a table to see the doctors available appointments');
+                $('#ajaxContent').append('<p> Press a table to see the doctor\'s available appointments.</p>');
+                $('#ajaxContent').append(createTablesFromJSON(responseData,"userRandevouzGet"));
+            }else{
+                $('#ajaxContent').append('<div id="Map" style="height:300px; width:100%"></div>');
+                $('#ajaxContent').append("<div id='divID'></div>");
+                $('#ajaxContent').append(createTableFromJSONmap(responseData));
+            }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -693,7 +703,7 @@ function docID() {
     xhr.send();
 }
 
-function RandevouGet(day,p) {
+function RandevouGet(day,p,action) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -703,13 +713,13 @@ function RandevouGet(day,p) {
             if (day==='0'){
                 console.log(day);
                 $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
-                $('#ajaxContent').append(createTablesFromJSON(responseData, "modifyAppointment"));
+                $('#ajaxContent').append(createTablesFromJSON(responseData, action));
             }else{
                 $('#ajaxContent').append(createTablesFromJSON(responseData, null));
                 console.log(p);
                 if(p==="0"){
                     console.log(day);
-                    $("#ajaxContent").append("<button onclick='RandevouGet("+day+","+"1"+")'  class='button'>Create PDF of the Appointments.</button><br>");
+                    $("#ajaxContent").append("<button onclick='RandevouGet("+day+","+"1"+",\"modifyAppointment\")'  class='button'>Create PDF of the Appointments.</button><br>");
                 }
             }
         } else if (xhr.status !== 200) {
@@ -727,18 +737,30 @@ function RandevouGet(day,p) {
 }
 
 function modifyAppointment(r_id) {
-    $("#ajaxContent").html("<button onclick='RandevouPut(\"done\"," + r_id + ")'  class='button'>Change status to Done Appointment</button><br>");
+    if(log === "d"){
+        $("#ajaxContent").html("<button onclick='RandevouPut(\"done\"," + r_id + ")'  class='button'>Change status to Done Appointment</button><br>");
+    }else{
+        $("#ajaxContent").html("");
+    }
     $("#ajaxContent").append("<button onclick='RandevouPut(\"cancelled\"," + r_id + ")'  class='button'>Cancel Appointment</button><br>");
 }
 
 //contains unimplemented function BloodtestGet()
 function RandevouPut(newstatus, r_id) {
+    if (newstatus==="selected"){
+        let myForm = document.getElementById('form_ap');
+        let formData = new FormData(myForm);
+        console.log(myForm);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+        user_info = data[user_info];
+    }
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
-            if(newsstatus === "done"){
+            if(newstatus === "done"){
                 $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
                 seeChoisesForPatient();
             }
@@ -754,7 +776,12 @@ function RandevouPut(newstatus, r_id) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
+    if (newstatus==="selected"){
+        console.log('mphke sthn selected');
+        xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id + '&user_ifo=' + "user_info");
+    }else{
+        xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
+    }
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -769,7 +796,7 @@ function day(){
     date = document.getElementById("date").value.toString();
     console.log(date);
     localStorage.setItem("date",date);
-    RandevouGet(date,"0");
+    RandevouGet(date,"0","modifyAppointment");
 }
 
 //gets users that had appointemts with the logged doctor.
@@ -816,7 +843,7 @@ function treatmentsPost(username){
             console.log(xhr.responseText);
             $('#ajaxContent').html("<h2> Your Patients:</h2>");
             $('#ajaxContent').append("<p>Press patient to see more.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), seeChoisesForPatient));
+            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), "seeChoisesForPatient"));
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
         } else if (xhr.status !== 200) {
@@ -947,4 +974,30 @@ function dataGet2(r_id) {
     xhr.open('GET', 'Data');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
+}
+
+function userRandevouzGet(doc_id){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            $('#ajaxContent').html("<h2> All the Available Appointments:</h2>");
+            $('#ajaxContent').append("<p>Press one to book.</p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData, "userAppointment"));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'> There are no available appointments for now!<br></p>");
+            $('#ajaxContent').append("<p style='color:red'> Check again later<br></p>");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'userRandevouz?doctor_id='+doc_id);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+function userAppointment(r_id){
+    $('#ajaxContent').html("<form id='form_ap' name='form_ap' onsubmit='RandevouPut(\"selected\","+r_id+");return false;'><input type='text' id='user_info' name='user_info' placeholder='Insert some info..'><input type='submit' class='button' value='Send'></form>");
+    //RandevouPut("selected",r_id);
 }

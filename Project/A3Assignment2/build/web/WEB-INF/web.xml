@@ -48,6 +48,10 @@
         <servlet-name>Messages</servlet-name>
         <servlet-class>servlets.Messages</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>userRandevouz</servlet-name>
+        <servlet-class>servlets.userRandevouz</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -95,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>Messages</servlet-name>
         <url-pattern>/Messages</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userRandevouz</servlet-name>
+        <url-pattern>/userRandevouz</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

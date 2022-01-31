@@ -164,13 +164,18 @@ public class Randevou extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             System.out.println("mphke put randevou");
             String newstatus = request.getParameter("newstatus");
+            System.out.println(newstatus);
             int r_id = Integer.parseInt(request.getParameter("r_id"));
+            System.out.println(r_id);
             EditRandevouzTable ert = new EditRandevouzTable();
             Randevouz r = ert.databaseToRandevouz(r_id);
+            System.out.println("prinifs");
             if (r.getStatus().equals("cancelled")) {
+                System.out.println("megalh if");
                 response.setStatus(403);
                 out.println("Appointment was canceled!");
             } else {
+                System.out.println("megalh else");
                 if (newstatus.equals("done") && r.getUser_id() == 0) {
                     response.setStatus(403);
                     out.println("User hasn't come!");
@@ -181,7 +186,18 @@ public class Randevou extends HttpServlet {
                     out.println(su.getAmka());
                     response.setStatus(402);
                 } else {
-                    ert.updateRandevouz(r_id, newstatus);
+                    if (newstatus.equals("selected")) {
+                        System.out.println("selected");
+                        HttpSession session = request.getSession();
+                        String username = session.getAttribute("loggedIn").toString();
+                        EditSimpleUserTable esut = new EditSimpleUserTable();
+                        SimpleUser su = esut.databaseToSimpleUserUsername(username);
+                        String user_info = request.getParameter("user_info");
+                        ert.updateRandevouz(r_id, su.getUser_id(), user_info, newstatus);
+                    } else {
+                        System.out.println("else");
+                        ert.updateRandevouz(r_id, newstatus);
+                    }
                     out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
                     response.setStatus(200);
                 }
