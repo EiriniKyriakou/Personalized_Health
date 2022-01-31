@@ -54,7 +54,7 @@ public class Data extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //System.out.println("mphke sthn getdata");
+        System.out.println("mphke sthn getdata");
         try (PrintWriter out = response.getWriter()) {
             //JSONConverter jc = new JSONConverter();
 
@@ -67,10 +67,12 @@ public class Data extends HttpServlet {
             Doctor d = edt.databaseToDoctorUsername(username);
             if (su != null) {
                 String json = eut.simpleUserToJSON(su);
+                System.out.println("\tUser data: " + json);
                 out.println(json);
                 response.setStatus(200);
             } else if (d != null) {
                 String json = edt.doctorToJSON(d);
+                System.out.println("\tDoctor data: " + json);
                 out.println(json);
                 response.setStatus(200);
             } else {

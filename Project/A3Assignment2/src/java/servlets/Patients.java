@@ -66,12 +66,12 @@ public class Patients extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             Doctor d = edt.databaseToDoctorUsername(username);
             r = ert.databaseToRandevouzs(d.getDoctor_id());
-            System.out.println(r);
+            System.out.println("\t randevous: " + r);
             if (r != null) {
                 for (int i = 0; i < r.size(); i++) {
                     if (r.get(i).getStatus().equals("done") && r.get(i).getUser_id() != 0) {
                         int id = r.get(i).getUser_id();
-                        System.out.println(id);
+                        System.out.println("\tPatients id: " + id);
                         p.add(esut.databaseToSimpleUserUserID(id));
                     }
                 }

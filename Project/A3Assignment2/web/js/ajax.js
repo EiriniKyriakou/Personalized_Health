@@ -695,12 +695,12 @@ function docID() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
+            //console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             //$('#ajaxContent').append(createTableFromJSON(responseData));
             for (const x in responseData) {
                 if (x === "doctor_id") {
-                    console.log(responseData[x]);
+                    console.log("doctor_id= "+responseData[x]);
                     id = responseData[x];
                 }
             }
@@ -832,14 +832,16 @@ function patientsGet(){
 //BloodtestGet() will contain (after succes if log="d"):
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 function seeChoisesForPatient(username){
-        $("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+        //$("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+        $("#ajaxContent").html("<button onclick='treatmentform("+1+")'  class='button'>See Patient's Blood Tests</button><br>");
 }
 
 function treatmentform(bloodtest_idtmp){
     $("#ajaxContent").load("treatmentform.html");
-    id = docID();
-    user_id = userFromBloodtestIDGet(bloodtest_id);
+    docID();
     bloodtest_id = bloodtest_idtmp;
+    userFromBloodtestIDGet(bloodtest_id);
+    
 }
 
 //??
@@ -850,7 +852,7 @@ function treatmentsPost(){
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
-            $('#ajaxContent').html("<p style='color:green'> Success:</p>");
+            $('#ajaxContent').html("<p style='color:green'> Success!</p>");
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'> That bloodtest already has a treatment!</p>");
         } else if (xhr.status !== 200) {
@@ -865,11 +867,11 @@ function treatmentsPost(){
     for (const x in data) {
         var category = x;
         var value = data[x];
-        console.log(category+ " " +value);
+        console.log(category+ "= " +value);
     }
     xhr.open('POST', 'Treatments');
     xhr.setRequestHeader("Content-type", "application/json");
-    xhr.send();
+    xhr.send(JSON.stringify(data));
 }
 
 function messegesGet(){
@@ -1015,9 +1017,10 @@ function userFromBloodtestIDGet(bloodtest_id){
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
+            //console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            return user_id = responseData.doctor_id;
+            user_id = responseData.user_id;
+            console.log("user_id="+user_id);
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }

@@ -50,14 +50,20 @@ public class userfromBloodtestID extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("mphke sthn get user from bloodtest id");
         int bloodtest_id = Integer.parseInt(request.getParameter("bloodtest_id"));
+        System.out.println("\tbloodtest_id = " + bloodtest_id);
         EditBloodTestTable ebt = new EditBloodTestTable();
         EditSimpleUserTable esut = new EditSimpleUserTable();
         try (PrintWriter out = response.getWriter()) {
             BloodTest bt = ebt.databaseToBloodTest(bloodtest_id);
+            System.out.println("\tbloodtest = " + bt);
             String amka = bt.getAmka();
+            System.out.println("\tamka = " + amka);
             SimpleUser su = esut.databaseToSimpleUserAmka(amka);
+            System.out.println("\tuser's bloodtest= " + su);
             String json = esut.simpleUserToJSON(su);
+            System.out.println("\tuser's bloodtest= " + json);
             out.println(json);
             response.setStatus(200);
 

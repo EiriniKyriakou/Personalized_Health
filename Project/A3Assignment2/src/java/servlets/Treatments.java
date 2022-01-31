@@ -63,11 +63,12 @@ public class Treatments extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //only doctor does post
-        System.out.println("mphke post treatment");
+        System.out.println("mphke post treatments");
         EditTreatmentTable ett = new EditTreatmentTable();
         JSON_Converter jc = new JSON_Converter();
         Treatment t = jc.jsonToTreatment(request.getReader());
         String JsonString = jc.treatmentToJSON(t);
+        System.out.println("\t" + JsonString);
         try {
             if (ett.databaseToTreatmentBloodtestID(t.getBloodtest_id()) != null) {
                 ett.addTreatmentFromJSON(JsonString);
