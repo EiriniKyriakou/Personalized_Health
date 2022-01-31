@@ -193,6 +193,7 @@ public class Randevou extends HttpServlet {
                         EditSimpleUserTable esut = new EditSimpleUserTable();
                         SimpleUser su = esut.databaseToSimpleUserUsername(username);
                         String user_info = request.getParameter("user_info");
+                        System.out.println(user_info);
                         ert.updateRandevouz(r_id, su.getUser_id(), user_info, newstatus);
                     } else {
                         System.out.println("else");

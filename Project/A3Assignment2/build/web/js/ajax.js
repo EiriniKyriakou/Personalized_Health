@@ -747,14 +747,6 @@ function modifyAppointment(r_id) {
 
 //contains unimplemented function BloodtestGet()
 function RandevouPut(newstatus, r_id) {
-    if (newstatus==="selected"){
-        let myForm = document.getElementById('form_ap');
-        let formData = new FormData(myForm);
-        console.log(myForm);
-        const data = {};
-        formData.forEach((value, key) => (data[key] = value));
-        user_info = data[user_info];
-    }
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -777,8 +769,12 @@ function RandevouPut(newstatus, r_id) {
         }
     };
     if (newstatus==="selected"){
+        let myForm = document.getElementById('form_ap');
+        let formData = new FormData(myForm);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
         console.log('mphke sthn selected');
-        xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id + '&user_ifo=' + "user_info");
+        xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id + '&user_info=' + data["user_info"]);
     }else{
         xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
     }
