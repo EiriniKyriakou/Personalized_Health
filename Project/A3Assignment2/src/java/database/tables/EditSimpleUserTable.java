@@ -302,4 +302,23 @@ public class EditSimpleUserTable {
         }
         return null;
     }
+
+    public SimpleUser databaseToSimpleUserAmka(String amka) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM users WHERE amka = '" + amka + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            SimpleUser user = gson.fromJson(json, SimpleUser.class);
+            return user;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
 }

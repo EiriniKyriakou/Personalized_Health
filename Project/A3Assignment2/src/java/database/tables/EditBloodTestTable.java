@@ -8,7 +8,6 @@ package database.tables;
 import mainClasses.BloodTest;
 import com.google.gson.Gson;
 import database.DB_Connection;
-import mainClasses.SimpleUser;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,6 +53,25 @@ public class EditBloodTestTable {
             rs = stmt.executeQuery("SELECT * FROM bloodtest WHERE amka= '" + amka + "' AND test_date='"+date+"'");
             rs.next();
             String json=DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            BloodTest bt = gson.fromJson(json, BloodTest.class);
+            return bt;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public BloodTest databaseToBloodTest(int bloodtest_id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM bloodtest WHERE bloodtest_id = '" + bloodtest_id + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
             Gson gson = new Gson();
             BloodTest bt = gson.fromJson(json, BloodTest.class);
             return bt;

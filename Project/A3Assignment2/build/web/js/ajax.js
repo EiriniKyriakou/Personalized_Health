@@ -833,41 +833,41 @@ function patientsGet(){
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 function seeChoisesForPatient(username){
         $("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
-        $("#ajaxContent").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
 }
 
-function treatmentform(username){
+function treatmentform(bloodtest_idtmp){
     $("#ajaxContent").load("treatmentform.html");
     id = docID();
+    user_id = userFromBloodtestIDGet(bloodtest_id);
+    bloodtest_id = bloodtest_idtmp;
 }
 
-//den exw kanei to servlet
-function treatmentsPost(username){
+//??
+function treatmentsPost(){
     let myForm = document.getElementById('form_treat');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
-            $('#ajaxContent').html("<h2> Your Patients:</h2>");
-            $('#ajaxContent').append("<p>Press patient to see more.</p>");
-            $('#ajaxContent').append(createTablesFromJSON(JSON.parse(xhr.responseText), "seeChoisesForPatient"));
+            $('#ajaxContent').html("<p style='color:green'> Success:</p>");
         } else if (xhr.status === 403) {
-            $('#ajaxContent').html("<p style='color:red'> You don't have patients yet!</p>");
+            $('#ajaxContent').html("<p style='color:red'> That bloodtest already has a treatment!</p>");
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
-    data["bloodtest_id"] = 0;
+    data["bloodtest_id"] = bloodtest_id;
     data["doctor_id"] = id;
+    data["user_id"] = user_id;
     for (const x in data) {
         var category = x;
         var value = data[x];
         console.log(category+ " " +value);
     }
-    xhr.open('POST', 'Treatments?username='+username);
+    xhr.open('POST', 'Treatments');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -1008,4 +1008,21 @@ function userRandevouzGet(doc_id){
 function userAppointment(r_id){
     $('#ajaxContent').html("<form id='form_ap' name='form_ap' onsubmit='RandevouPut(\"selected\","+r_id+");return false;'><input type='text' id='user_info' name='user_info' placeholder='Insert some info..'><input type='submit' class='button' value='Send'></form>");
     //RandevouPut("selected",r_id);
+}
+
+//??
+function userFromBloodtestIDGet(bloodtest_id){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
+            return user_id = responseData.doctor_id;
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'userfromBloodtestID?bloodtest_id='+bloodtest_id);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
 }
