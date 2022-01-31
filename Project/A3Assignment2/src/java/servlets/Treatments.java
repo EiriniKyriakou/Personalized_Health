@@ -70,7 +70,7 @@ public class Treatments extends HttpServlet {
         String JsonString = jc.treatmentToJSON(t);
         System.out.println("\t" + JsonString);
         try {
-            if (ett.databaseToTreatmentBloodtestID(t.getBloodtest_id()) != null) {
+            if (ett.databaseToTreatmentBloodtestID(t.getBloodtest_id()) == null) {
                 ett.addTreatmentFromJSON(JsonString);
                 response.getWriter().write(JsonString);
                 response.setStatus(200);
