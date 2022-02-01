@@ -73,7 +73,7 @@ public class BloodTests extends HttpServlet {
             HttpSession session = request.getSession();
             String date = request.getParameter("date");
             String Test = request.getParameter("Test");
-            if(date!=null){
+            if (date != null) {
                 System.out.println(date);
                 ArrayList<BloodTest> d = new ArrayList<BloodTest>();
                 String username = session.getAttribute("loggedIn").toString();
@@ -87,21 +87,21 @@ public class BloodTests extends HttpServlet {
                     System.out.println(d.size());
                 }
                 if (d.size() > 1) {
-                while (j == 0) {
-                    j = 1;
-                    for (i = 0; i < d.size() - 1; i++) {
-                        System.out.println(i);
-                        System.out.println(d.get(i).test_date);
-                        System.out.println(d.get(i + 1).test_date);
-                        System.out.println(d.get(i).test_date.compareTo(d.get(i + 1).test_date));
-                        if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == 1) {
-                            System.out.println("nai2");
-                        BloodTest temp = d.get(i);
-                        d.set(i, d.get(i + 1));
-                        d.set(i + 1, temp);
-                        j = 0;
-                    }
-                    }
+                    while (j == 0) {
+                        j = 1;
+                        for (i = 0; i < d.size() - 1; i++) {
+                            System.out.println(i);
+                            System.out.println(d.get(i).test_date);
+                            System.out.println(d.get(i + 1).test_date);
+                            System.out.println(d.get(i).test_date.compareTo(d.get(i + 1).test_date));
+                            if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == 1) {
+                                System.out.println("nai2");
+                                BloodTest temp = d.get(i);
+                                d.set(i, d.get(i + 1));
+                                d.set(i + 1, temp);
+                                j = 0;
+                            }
+                        }
                     }
                 }
 
@@ -123,13 +123,13 @@ public class BloodTests extends HttpServlet {
                 out.println(json);
                 response.setStatus(200);
             } else {
-            EditBloodTestTable edt = new EditBloodTestTable();
-            EditSimpleUserTable eut = new EditSimpleUserTable();
-            ArrayList<BloodTest> d = new ArrayList<BloodTest>();
-            String username = session.getAttribute("loggedIn").toString();
-            SimpleUser bt = eut.databaseToSimpleUserUsername(username);
-            String amka = bt.getAmka();
-            d = edt.databaseToBloodtest(amka);
+                EditBloodTestTable edt = new EditBloodTestTable();
+                EditSimpleUserTable eut = new EditSimpleUserTable();
+                ArrayList<BloodTest> d = new ArrayList<BloodTest>();
+                String username = session.getAttribute("loggedIn").toString();
+                SimpleUser bt = eut.databaseToSimpleUserUsername(username);
+                String amka = bt.getAmka();
+                d = edt.databaseToBloodtest(amka);
                 Gson gson = new Gson();
                 String json = gson.toJson(d);
                 out.println(json);
@@ -142,7 +142,6 @@ public class BloodTests extends HttpServlet {
             Logger.getLogger(BloodTests.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
