@@ -59,9 +59,31 @@ public class JSON_Converter {
 
     public String randevouzToJSON(Randevouz ran) {
         Gson gson = new Gson();
-
         String json = gson.toJson(ran, Randevouz.class);
         return json;
     }
-    
+
+    public Message jsonToMessage(BufferedReader json) {
+        Gson gson = new Gson();
+        Message msg = gson.fromJson(json, Message.class);
+        return msg;
+    }
+
+    public String messageToJSON(Message msg) {
+        Gson gson = new Gson();
+        String json = gson.toJson(msg, Message.class);
+        return json;
+    }
+
+    public Treatment jsonToTreatment(BufferedReader json) {
+        Gson gson = new Gson();
+        Treatment trt = gson.fromJson(json, Treatment.class);
+        return trt;
+    }
+
+    public String treatmentToJSON(Treatment trt) {
+        Gson gson = new Gson();
+        String json = gson.toJson(trt, Treatment.class);
+        return json;
+    }
 }

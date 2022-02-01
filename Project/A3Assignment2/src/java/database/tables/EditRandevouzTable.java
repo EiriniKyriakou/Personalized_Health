@@ -93,6 +93,15 @@ public class EditRandevouzTable {
         con.close();
     }
 
+    public void updateRandevouz(int randevouzID, String status) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String updateQuery = "UPDATE randevouz SET status='" + status + "' WHERE randevouz_id = '" + randevouzID + "'";
+        stmt.executeUpdate(updateQuery);
+        stmt.close();
+        con.close();
+    }
+
     public void deleteRandevouz(int randevouzID) throws SQLException, ClassNotFoundException{
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
@@ -179,5 +188,105 @@ public class EditRandevouzTable {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    public ArrayList<Randevouz> databaseToRandevouzsFree(int doctor_id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Randevouz> randevouzs = new ArrayList<Randevouz>();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE doctor_id= '" + doctor_id + "' AND status='free'");
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Randevouz r = gson.fromJson(json, Randevouz.class);
+                randevouzs.add(r);
+            }
+            return randevouzs;
+
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public ArrayList<Randevouz> databaseToRandevouzs(int doctor_id, String date) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Randevouz> randevouzs = new ArrayList<Randevouz>();
+        ResultSet rs;
+        String date2 = date.substring(0, date.length() - 1);
+        int last = Integer.parseInt(String.valueOf(date.charAt(date.length() - 1))) + 1;
+        date2 += Integer.toString(last);
+        System.out.println(date);
+        System.out.println(date2);
+        try {
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE doctor_id= '" + doctor_id + "' AND date_time>'" + date + "' AND date_time<'" + date2 + "'");
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Randevouz r = gson.fromJson(json, Randevouz.class);
+                randevouzs.add(r);
+            }
+            return randevouzs;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public ArrayList<Randevouz> databaseToUserRandevouzs(int user_id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Randevouz> randevouzs = new ArrayList<Randevouz>();
+        ResultSet rs = null;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE user_id= '" + user_id + "'");
+            while (rs.next()) {
+                String json = DB_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Randevouz r = gson.fromJson(json, Randevouz.class);
+                randevouzs.add(r);
+            }
+            return randevouzs;
+
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* Ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* Ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* Ignored */ }
+        }
+        return null;
+    }
+
+    public boolean databaseToRandevouz(int doctor_id, int user_id) {
+        try {
+            Connection con = DB_Connection.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("SELECT * FROM randevouz WHERE doctor_id= '" + doctor_id + "' AND user_id='" + user_id + "' AND status='done'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Randevouz bt = gson.fromJson(json, Randevouz.class);
+            return true;
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(EditRandevouzTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 }

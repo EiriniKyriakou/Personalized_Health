@@ -6,8 +6,10 @@
 package servlets;
 
 import com.google.gson.Gson;
+import com.itextpdf.text.DocumentException;
 import database.tables.EditDoctorTable;
 import database.tables.EditRandevouzTable;
+import database.tables.EditSimpleUserTable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -19,9 +21,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import mainClasses.CreatePDF;
 import mainClasses.Doctor;
 import mainClasses.JSON_Converter;
 import mainClasses.Randevouz;
+import mainClasses.SimpleUser;
 
 /**
  *
@@ -30,7 +34,7 @@ import mainClasses.Randevouz;
 public class Randevou extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> and <code>PUT</code>methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -60,18 +64,48 @@ public class Randevou extends HttpServlet {
             String username = session.getAttribute("loggedIn").toString();
             EditRandevouzTable ert = new EditRandevouzTable();
             EditDoctorTable edt = new EditDoctorTable();
+            EditSimpleUserTable esut = new EditSimpleUserTable();
             Doctor d = edt.databaseToDoctorUsername(username);
+            SimpleUser su = esut.databaseToSimpleUserUsername(username);
             ArrayList<Randevouz> r = new ArrayList<Randevouz>();
-            r = ert.databaseToRandevouzs(d.getDoctor_id());
-            if (r != null) {
+            if (su != null) {
+                r = ert.databaseToUserRandevouzs(su.getUser_id());
                 Gson gson = new Gson();
                 String json = gson.toJson(r);
                 System.out.println(json);
                 out.println(json);
                 response.setStatus(200);
             } else {
-                out.println("404. You have no appointments!");
-                response.setStatus(404);
+                String day = request.getParameter("day");
+                String p = request.getParameter("p");
+                System.out.println(p);
+                System.out.println(day);
+                if (day.equals("0")) {
+                    r = ert.databaseToRandevouzs(d.getDoctor_id());
+                } else {
+                    System.out.println("mphke gia get rantevou by day");
+                    r = ert.databaseToRandevouzs(d.getDoctor_id(), day);
+                }
+                if (r != null) {
+                    Gson gson = new Gson();
+                    String json = gson.toJson(r);
+                    System.out.println(json);
+                    out.println(json);
+                    response.setStatus(200);
+                    if (p.equals("1")) {
+                        System.out.println("mphke sto na kalesei create pdf");
+                        CreatePDF pdf = new CreatePDF();
+                        try {
+                            pdf.create(r);
+                        } catch (DocumentException ex) {
+                            Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                } else {
+                    out.println("You have no appointments!");
+                    response.setStatus(404);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
@@ -125,6 +159,63 @@ public class Randevou extends HttpServlet {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try (PrintWriter out = response.getWriter()) {
+            System.out.println("mphke put randevou");
+            String newstatus = request.getParameter("newstatus");
+            System.out.println(newstatus);
+            int r_id = Integer.parseInt(request.getParameter("r_id"));
+            System.out.println(r_id);
+            EditRandevouzTable ert = new EditRandevouzTable();
+            Randevouz r = ert.databaseToRandevouz(r_id);
+            System.out.println("prinifs");
+            if (r.getStatus().equals("cancelled")) {
+                System.out.println("megalh if");
+                response.setStatus(403);
+                out.println("Appointment is already canceled!");
+            } else {
+                System.out.println("megalh else");
+                if (newstatus.equals("done") && r.getUser_id() == 0) {
+                    response.setStatus(403);
+                    out.println("User hasn't come!");
+                } else if (r.getStatus().equals("done") && r.getUser_id() != 0) {
+                    int userid = r.getUser_id();
+                    EditSimpleUserTable esut = new EditSimpleUserTable();
+                    SimpleUser su = esut.databaseToSimpleUserUserID(userid);
+                    out.println(su.getAmka());
+                    response.setStatus(402);
+                } else {
+                    if (newstatus.equals("selected")) {
+                        System.out.println("selected");
+                        HttpSession session = request.getSession();
+                        String username = session.getAttribute("loggedIn").toString();
+                        EditSimpleUserTable esut = new EditSimpleUserTable();
+                        SimpleUser su = esut.databaseToSimpleUserUsername(username);
+                        String user_info = request.getParameter("user_info");
+                        System.out.println(user_info);
+                        ert.updateRandevouz(r_id, su.getUser_id(), user_info, newstatus);
+                    } else {
+                        System.out.println("else");
+                        ert.updateRandevouz(r_id, newstatus);
+                    }
+                    out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
+                    response.setStatus(200);
+                }
+            }
+        } catch (SQLException | ClassNotFoundException ex) {
+            Logger.getLogger(Randevou.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

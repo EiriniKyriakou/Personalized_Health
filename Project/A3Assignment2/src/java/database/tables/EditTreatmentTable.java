@@ -8,14 +8,12 @@ package database.tables;
 import com.google.gson.Gson;
 import database.tables.EditBloodTestTable;
 import database.DB_Connection;
-import database.tables.EditMessageTable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mainClasses.Message;
 import mainClasses.Treatment;
 
 /**
@@ -31,7 +29,6 @@ public class EditTreatmentTable {
     }
     public String treatmentToJSON(Treatment tr) {
         Gson gson = new Gson();
-
         String json = gson.toJson(tr, Treatment.class);
         return json;
     }
@@ -53,6 +50,24 @@ public class EditTreatmentTable {
             String json=DB_Connection.getResultsToJSON(rs);
             Gson gson = new Gson();
             Treatment tr  = gson.fromJson(json, Treatment.class);
+            return tr;
+        } catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Treatment databaseToTreatmentBloodtestID(int bloodtest_id) throws SQLException, ClassNotFoundException {
+        Connection con = DB_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery("SELECT * FROM treatment WHERE bloodtest_id= '" + bloodtest_id + "'");
+            rs.next();
+            String json = DB_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Treatment tr = gson.fromJson(json, Treatment.class);
             return tr;
         } catch (Exception e) {
             System.err.println("Got an exception! ");
