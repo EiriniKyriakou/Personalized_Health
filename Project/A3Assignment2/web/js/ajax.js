@@ -523,7 +523,7 @@ function dataGet() {
 //sxedon idia me thn apo panw, mallon periti 
 //zhtaei ta data kai ta vazei sthn forma allaghs
 function changeDataRequest() {
-    $('#choices').load("form.html");
+    $('#ajaxContent').load("form.html");
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -658,6 +658,7 @@ function getWG() {
 
 function uploadBloodTests(){
     $("#choices").html("");
+    $("#ajaxContent").html("");
     $("#choices").append("<h2>Choices:</h2>");
     $("#choices").append('<form id="form_log2" name="form_log2" onsubmit="Bloodtest() ;return false;"></form>');
     $("#form_log2").append('<h3>Input</h3><br>');
@@ -849,10 +850,8 @@ function GetGraphValues(){
 }
 
 function Bloodtest(){
-    //alert(12);
     $('#ajaxContent').html("");
     let myForm = document.getElementById('form_log2');
-    //alert(document.getElementById('form_log2').name);
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
@@ -861,35 +860,24 @@ function Bloodtest(){
             //if (document.getElementById('type_user').value === "doctor"){
                 //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
             //}else{
-                $('#ajaxContent').html("Successful bloodest addition.!<br>");
+            $('#ajaxContent').html("Successful bloodest addition.!<br>");
             //}
             $('#ajaxContent').append(createTableFromJSON(responseData));
             setChoicesForLoggedUser();
-        //} else if (xhr.status === 403){
-            //$('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". User already exists!<br>");
-        //} else if (xhr.status === 402){
-          //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
-        //} else if (xhr.status === 401){
-           // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-           const responseData = JSON.parse(xhr.responseText);
-            for (const x in responseData) {
-                $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
-            }
+           //const responseData = JSON.parse(xhr.responseText);
+            //for (const x in responseData) {
+                //$('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
+            //}
         }
         
     };
     const data = {};
     console.log(1);
     formData.forEach((value, key) => (data[key] = value));
-    console.log(data);
-    //if(document.getElementById('type_user').value === "doctor"){
-        xhr.open('POST', 'BloodTests');
-        
-    //}else{
-        //xhr.open('POST', 'Register');
-    //}
+    console.log("mphke sthn post blood test data formas\n"+ data);
+    xhr.open('POST', 'BloodTests');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(data));
     //uploadBloodTests();

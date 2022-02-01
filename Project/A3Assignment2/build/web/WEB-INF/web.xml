@@ -41,6 +41,26 @@
         <servlet-class>servlets.Randevou</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>Patients</servlet-name>
+        <url-pattern>servlets.Patients</url-pattern>
+    </servlet>
+    <servlet>
+        <servlet-name>Messages</servlet-name>
+        <servlet-class>servlets.Messages</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userRandevouz</servlet-name>
+        <servlet-class>servlets.userRandevouz</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Treatments</servlet-name>
+        <servlet-class>servlets.Treatments</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userfromBloodtestID</servlet-name>
+        <servlet-class>servlets.userfromBloodtestID</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>BloodTests</servlet-name>
         <servlet-class>servlets.BloodTests</servlet-class>
     </servlet>
@@ -83,6 +103,26 @@
     <servlet-mapping>
         <servlet-name>Randevou</servlet-name>
         <url-pattern>/Randevou</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Patients</servlet-name>
+        <url-pattern>/Patients</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Messages</servlet-name>
+        <url-pattern>/Messages</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userRandevouz</servlet-name>
+        <url-pattern>/userRandevouz</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Treatments</servlet-name>
+        <url-pattern>/Treatments</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userfromBloodtestID</servlet-name>
+        <url-pattern>/userfromBloodtestID</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>BloodTests</servlet-name>
