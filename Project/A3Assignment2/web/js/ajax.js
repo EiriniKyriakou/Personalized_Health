@@ -42,15 +42,15 @@ function createTablesFromJSON(data, action) {
         if (action !== null) {
             if (action === "modifyAppointment" || action === "userAppointment") {
                 html += "<button class='block' value='" + data[i].randevouz_id + "' onclick='" + action + "(this.value)'>";
-            } else if(action === "messageReply"){
-                if(log==="d"){
+            } else if (action === "messageReply") {
+                if (log === "d") {
                     html += "<button class='block' value='" + data[i].user_id + "' onclick='" + action + "(this.value)'>";
-                }else{
+                } else {
                     html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
                 }
-            }else if (action ==="userRandevouzGet"){
+            } else if (action === "userRandevouzGet") {
                 html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
-            }else {
+            } else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
             }
         }
@@ -58,15 +58,15 @@ function createTablesFromJSON(data, action) {
         for (const x in data[i]) {
             var category = x;
             if (category !== "password" && category !== "randevouz_id" && /*category !== "user_id" && category !== "doctor_id"
-                    && */category !== "lat" && category !== "lon" && category !== "message_id") {
+             && */category !== "lat" && category !== "lon" && category !== "message_id") {
                 var value = data[i][x];
                 html += "<tr><td>" + category + "</td><td>" + value + "</td></tr>";
             }
         }
         html += "</table>";
-        if (action !== null){
+        if (action !== null) {
             html += "</buttom><br><br>";
-        }else{
+        } else {
             html += "<br>";
         }
     }
@@ -74,7 +74,7 @@ function createTablesFromJSON(data, action) {
 }
 
 //print doctors and in map (guest)
-function createTableFromJSONmap(data,action) {
+function createTableFromJSONmap(data, action) {
     var count = Object.keys(data).length;
     console.log(count);
     var html = "<p>Press doctor's table to send a message";
@@ -111,8 +111,8 @@ function createTableFromJSONmap(data,action) {
     map.addLayer(markers);
 
     for (var i = 0; i < count; i++) {
-        if(action!=null){
-            html += "<button class='block' value='" + data[i].doctor_id + "' onclick='"+action+"(this.value)'>";
+        if (action != null) {
+            html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
         }
         html += "<table><tr><th>Category</th><th>Value</th></tr>";
         html += "<tr><td> First Name </td><td>" + data[i].firstname + "</td></tr>";
@@ -123,9 +123,9 @@ function createTableFromJSONmap(data,action) {
         html += "<tr><td> Specialty </td><td>" + data[i].specialty + "</td></tr>";
         html += "<tr><td> Telephone </td><td>" + data[i].telephone + "</td></tr>";
         html += "</table>";
-        if(action!=null){
+        if (action != null) {
             html += "</buttom><br><br>";
-        }else{
+        } else {
             html += "<br>";
         }
         var position = setPosition(data[i].lat, data[i].lon);
@@ -136,7 +136,7 @@ function createTableFromJSONmap(data,action) {
         //mar.events.register(true, mar, function(evt){handler(position, msg);});
         console.log(data[i].firstname + ' ' + data[i].lastname);
     }
-    
+
     //Orismos zoom
     const zoom = 11;
     map.setCenter(pos, zoom);
@@ -150,7 +150,7 @@ function isLoggedIn() {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             if (log === "su") {
-                setTimeout(getNotificationforAppointment,1000);
+                setTimeout(getNotificationforAppointment, 1000);
                 setChoicesForLoggedUser();
                 document.getElementById("title").innerHTML = "User";
             } else if (log === "a") {
@@ -295,8 +295,8 @@ function setChoicesForLoggedUser() {
     $("#choices").append("<button onclick='RandevouGet(\"0\",\"0\",\"modifyAppointment\")' class='button' >See All Your Appointments</button><br>");
     $("#choices").append("<button onclick='messegesGet()'  class='button'>See Your Messeges!</button><br>");
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
-    
-    
+
+
 }
 
 function setChoicesForDoctor() {
@@ -329,155 +329,155 @@ function setChoicesForAdmin() {
 }
 
 
-function giveBloodTests(){
+function giveBloodTests() {
     /*alert(12);
-    let myForm = document.getElementById('form_log2');
-    //alert(document.getElementById('form_log2').name);
-    let formData = new FormData(myForm);*/
+     let myForm = document.getElementById('form_log2');
+     //alert(document.getElementById('form_log2').name);
+     let formData = new FormData(myForm);*/
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             //if (document.getElementById('type_user').value === "doctor"){
-                //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
+            //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
             //}else{
-                $('#ajaxContent').html("Successful bloodest showing.!<br>");
+            $('#ajaxContent').html("Successful bloodest showing.!<br>");
             //}
-            $('#ajaxContent').append(createTablesFromJSON(responseData,null));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, null));
             setChoicesForLoggedUser();
-        //} else if (xhr.status === 403){
+            //} else if (xhr.status === 403){
             //$('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". User already exists!<br>");
-        //} else if (xhr.status === 402){
-          //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
-        //} else if (xhr.status === 401){
-           // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
+            //} else if (xhr.status === 402){
+            //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
+            //} else if (xhr.status === 401){
+            // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-           const responseData = JSON.parse(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
             for (const x in responseData) {
                 $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
             }
         }
-        
+
     };
     /*const data = {};
-    console.log(1);
-    formData.forEach((value, key) => (data[key] = value));
-    console.log(data);*/
+     console.log(1);
+     formData.forEach((value, key) => (data[key] = value));
+     console.log(data);*/
     //if(document.getElementById('type_user').value === "doctor"){
-        xhr.open('GET', 'BloodTests');
-        
+    xhr.open('GET', 'BloodTests');
+
     //}else{x
-        //xhr.open('POST', 'Register');
+    //xhr.open('POST', 'Register');
     //}
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
 
-function sortBloodTests(data){
-    if(data.length>0){
-                var i;
-                for(i=0;i<data.length-1;i++){
-                var n=data[i+1].vitamin_d3+ "           Previous: "+data[i].vitamin_d3+"   ";
-                data[i+1].vitamin_d3=n;
-                if(data[i+1].vitamin_d3>data[i].vitamin_d3){
-                    data[i+1].vitamin_d3_level="Higher than previous test";
-                }else if(data[i+1].vitamin_d3<data[i].vitamin_d3){
-                    data[i+1].vitamin_d3_level="Lower than previous test";
-                }else{
-                    data[i+1].vitamin_d3_level="Same as previous test";
-                }
-                n=data[i+1].vitamin_b12+ "           Previous: "+data[i].vitamin_b12;
-                data[i+1].vitamin_b12=n;
-                if(data[i+1].vitamin_b12>data[i].vitamin_b12){
-                    data[i+1].vitamin_b12_level	="Higher than previous test";
-                }else if(data[i+1].vitamin_b12<data[i].vitamin_b12){
-                    data[i+1].vitamin_b12_level	="Lower than previous test";
-                }else{
-                    data[i+1].vitamin_b12_level	="Same as previous test";
-                }
-                n=data[i+1].cholesterol+ "           Previous: "+data[i].cholesterol;
-                data[i+1].cholesterol=n;
-                if(data[i+1].cholesterol>data[i].cholesterol){
-                    data[i+1].cholesterol_level	="Higher than previous test";
-                }else if(data[i+1].cholesterol<data[i].cholesterol){
-                    data[i+1].cholesterol_level	="Lower than previous test";
-                }else{
-                    data[i+1].cholesterol_level	="Same as previous test";
-                }
-                n=data[i+1].blood_sugar+ "           Previous: "+data[i].blood_sugar;
-                data[i+1].blood_sugar=n;
-                if(data[i+1].blood_sugar>data[i].blood_sugar){
-                    data[i+1].blood_sugar_level="Higher than previous test";
-                }else if(data[i+1].blood_sugar<data[i].blood_sugar){
-                    data[i+1].blood_sugar_level="Lower than previous test";
-                }else{
-                    data[i+1].blood_sugar_level="Same as previous test";
-                }
-                n=data[i+1].iron+ "           Previous: "+data[i].iron;
-                data[i+1].iron=n;
-                if(data[i+1].iron>data[i].iron){
-                    data[i+1].iron_level	="Higher than previous test";
-                }else if(data[i+1].iron<data[i].iron){
-                    data[i+1].iron_level	="Lower than previous test";
-                }else{
-                    data[i+1].iron_level	="Same as previous test";
-                }
-                
+function sortBloodTests(data) {
+    if (data.length > 0) {
+        var i;
+        for (i = 0; i < data.length - 1; i++) {
+            var n = data[i + 1].vitamin_d3 + "           Previous: " + data[i].vitamin_d3 + "   ";
+            data[i + 1].vitamin_d3 = n;
+            if (data[i + 1].vitamin_d3 > data[i].vitamin_d3) {
+                data[i + 1].vitamin_d3_level = "Higher than previous test";
+            } else if (data[i + 1].vitamin_d3 < data[i].vitamin_d3) {
+                data[i + 1].vitamin_d3_level = "Lower than previous test";
+            } else {
+                data[i + 1].vitamin_d3_level = "Same as previous test";
             }
-}
+            n = data[i + 1].vitamin_b12 + "           Previous: " + data[i].vitamin_b12;
+            data[i + 1].vitamin_b12 = n;
+            if (data[i + 1].vitamin_b12 > data[i].vitamin_b12) {
+                data[i + 1].vitamin_b12_level = "Higher than previous test";
+            } else if (data[i + 1].vitamin_b12 < data[i].vitamin_b12) {
+                data[i + 1].vitamin_b12_level = "Lower than previous test";
+            } else {
+                data[i + 1].vitamin_b12_level = "Same as previous test";
+            }
+            n = data[i + 1].cholesterol + "           Previous: " + data[i].cholesterol;
+            data[i + 1].cholesterol = n;
+            if (data[i + 1].cholesterol > data[i].cholesterol) {
+                data[i + 1].cholesterol_level = "Higher than previous test";
+            } else if (data[i + 1].cholesterol < data[i].cholesterol) {
+                data[i + 1].cholesterol_level = "Lower than previous test";
+            } else {
+                data[i + 1].cholesterol_level = "Same as previous test";
+            }
+            n = data[i + 1].blood_sugar + "           Previous: " + data[i].blood_sugar;
+            data[i + 1].blood_sugar = n;
+            if (data[i + 1].blood_sugar > data[i].blood_sugar) {
+                data[i + 1].blood_sugar_level = "Higher than previous test";
+            } else if (data[i + 1].blood_sugar < data[i].blood_sugar) {
+                data[i + 1].blood_sugar_level = "Lower than previous test";
+            } else {
+                data[i + 1].blood_sugar_level = "Same as previous test";
+            }
+            n = data[i + 1].iron + "           Previous: " + data[i].iron;
+            data[i + 1].iron = n;
+            if (data[i + 1].iron > data[i].iron) {
+                data[i + 1].iron_level = "Higher than previous test";
+            } else if (data[i + 1].iron < data[i].iron) {
+                data[i + 1].iron_level = "Lower than previous test";
+            } else {
+                data[i + 1].iron_level = "Same as previous test";
+            }
+
+        }
+    }
 }
 
-function compareBloodTests(){
+function compareBloodTests() {
     /*alert(12);
-    let myForm = document.getElementById('form_log2');
-    //alert(document.getElementById('form_log2').name);
-    let formData = new FormData(myForm);*/
+     let myForm = document.getElementById('form_log2');
+     //alert(document.getElementById('form_log2').name);
+     let formData = new FormData(myForm);*/
     $('#ajaxContent').html("");
     /*let myForm = document.getElementById('form_log3');
-    //alert(document.getElementById('form_log2').name);
-    let formData = new FormData(myForm);*/
+     //alert(document.getElementById('form_log2').name);
+     let formData = new FormData(myForm);*/
     var xhr = new XMLHttpRequest();
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var responseData = JSON.parse(xhr.responseText);
             //alert(responseData[0].amka);
-            
+
             //if (document.getElementById('type_user').value === "doctor"){
-                //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
+            //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
             //}else{
-                $('#ajaxContent').html("Successful bloodest showing.!<br>");
-                sortBloodTests(responseData);
+            $('#ajaxContent').html("Successful bloodest showing.!<br>");
+            sortBloodTests(responseData);
             //}
-            $('#ajaxContent').append(createTablesFromJSON(responseData,null));
+            $('#ajaxContent').append(createTablesFromJSON(responseData, null));
             setChoicesForLoggedUser();
-        //} else if (xhr.status === 403){
+            //} else if (xhr.status === 403){
             //$('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". User already exists!<br>");
-        //} else if (xhr.status === 402){
-          //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
-        //} else if (xhr.status === 401){
-           // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
+            //} else if (xhr.status === 402){
+            //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
+            //} else if (xhr.status === 401){
+            // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-           const responseData = JSON.parse(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
             for (const x in responseData) {
                 $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
             }
         }
-    //const data = {};
-    console.log(1);
-    //formData.forEach((value, key) => (data[key] = value));
+        //const data = {};
+        console.log(1);
+        //formData.forEach((value, key) => (data[key] = value));
     };
     /*const data = {};
-    console.log(1);
-    formData.forEach((value, key) => (data[key] = value));
-    console.log(data);*/
+     console.log(1);
+     formData.forEach((value, key) => (data[key] = value));
+     console.log(data);*/
     //if(document.getElementById('type_user').value === "doctor"){
-        xhr.open('GET', 'BloodTests?date='+document.getElementById("test_date").value);
-        
+    xhr.open('GET', 'BloodTests?date=' + document.getElementById("test_date").value);
+
     //}else{
-        //xhr.open('POST', 'Register');
+    //xhr.open('POST', 'Register');
     //}
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
@@ -656,15 +656,15 @@ function getWG() {
     xhr.send();
 }
 
-function uploadBloodTests(){
+function uploadBloodTests() {
     $("#choices").html("");
     $("#ajaxContent").html("");
     $("#choices").append("<h2>Choices:</h2>");
     $("#choices").append('<form id="form_log2" name="form_log2" onsubmit="Bloodtest() ;return false;"></form>');
     $("#form_log2").append('<h3>Input</h3><br>');
     /*$("#form_log2").append('<label for="amka2">*AMKA</label><br>');  
-    $("#form_log2").append('<input type="text" id="amka" name="amka" placeholder="Your AMKA..." pattern="[0-9]{11}" title="Must contain 11 numbers" required>');
-    $("#form_log2").append('<span id="amka_error"></span> <br><br>');*/
+     $("#form_log2").append('<input type="text" id="amka" name="amka" placeholder="Your AMKA..." pattern="[0-9]{11}" title="Must contain 11 numbers" required>');
+     $("#form_log2").append('<span id="amka_error"></span> <br><br>');*/
     //$("#form_log2").append('<!-- Date Of Tests -->');
     $("#form_log2").append('<label for="date">*Date Of Tests</label> <br>');
     $("#form_log2").append('<input type="date" id="test_date" name="test_date" value="1980-01-01" min="1920-01-01" required> <br><br>');
@@ -676,49 +676,49 @@ function uploadBloodTests(){
     $("#form_log2").append('<label for="BloodSugar">*Blood Sugar</label><br>');
     $("#form_log2").append('<input type="number" id="blood_sugar" name="blood_sugar" step="0.01" required><br><br>');
     /*//$("#form_log2").append('<!-- Blood Sugar Level -->');
-    $("#form_log2").append('<label for="BloodSugarLevel">*Blood Sugar Level</label> <br>');
-    $("#form_log2").append('<input type="text" id="blood_sugar_level" name="blood_sugar_level" required><br><br>');*/
+     $("#form_log2").append('<label for="BloodSugarLevel">*Blood Sugar Level</label> <br>');
+     $("#form_log2").append('<input type="text" id="blood_sugar_level" name="blood_sugar_level" required><br><br>');*/
     //$("#form_log2").append('<!--Cholesterol-->');
     $("#form_log2").append('<label for="Cholesterol">*Cholesterol</label><br>');
     $("#form_log2").append('<input type="number" id="cholesterol" name="cholesterol" step="0.01" required><br><br>');
     /*//$("#form_log2").append('<!-- Cholesterol Level -->');
-    $("#form_log2").append('<label for="CholosterolLevel">Cholesterol Level</label> <br>');
-    $("#form_log2").append('<input type="text" id="cholesterol_level" name="cholesterol_level" required><br><br>');
-    *///$("#form_log2").append('<!--Iron-->');
+     $("#form_log2").append('<label for="CholosterolLevel">Cholesterol Level</label> <br>');
+     $("#form_log2").append('<input type="text" id="cholesterol_level" name="cholesterol_level" required><br><br>');
+     *///$("#form_log2").append('<!--Iron-->');
     $("#form_log2").append('<label for="Iron">*Iron</label><br>');
     $("#form_log2").append('<input type="number" id="iron" name="iron" step="0.01" required><br><br>');
     /*//$("#form_log2").append('<!-- Iron Level -->');
-    $("#form_log2").append('<label for="Iron">Iron Level</label> <br>');
-    $("#form_log2").append('<input type="text" id="iron_level" name="iron_level" required><br><br>');
-    *///$("#form_log2").append('<!--VitaminD3-->');
+     $("#form_log2").append('<label for="Iron">Iron Level</label> <br>');
+     $("#form_log2").append('<input type="text" id="iron_level" name="iron_level" required><br><br>');
+     *///$("#form_log2").append('<!--VitaminD3-->');
     $("#form_log2").append('<label for="VitaminD3">*Vitamin D3</label><br>');
     $("#form_log2").append('<input type="number" id="vitamin_d3" name="vitamin_d3" step="0.01" required><br><br>');
     /*//$("#form_log2").append('<!-- Vitamin D3 Level -->');
-    $("#form_log2").append('<label for="VitaminD3Level">Vitamin D3 Level</label> <br>');
-    $("#form_log2").append('<input type="text" id="vitamin_d3_level" name="vitamin_d3_level" required><br><br>');
-    *///$("#form_log2").append('<!--VitaminB12-->');
+     $("#form_log2").append('<label for="VitaminD3Level">Vitamin D3 Level</label> <br>');
+     $("#form_log2").append('<input type="text" id="vitamin_d3_level" name="vitamin_d3_level" required><br><br>');
+     *///$("#form_log2").append('<!--VitaminB12-->');
     $("#form_log2").append('<label for="VitaminB12">*Vitamin B12</label><br>');
     $("#form_log2").append('<input type="number" id="vitamin_b12" name="vitamin_b12" step="0.01" required><br><br>');
     //$("#form_log2").append('<!-- Vitamin B12 Level -->');
     /*$("#form_log2").append('<label for="VitaminB12Level">Vitamin B12 Level</label> <br>');
-    $("#form_log2").append('<input type="text" id="vitamin_b12_level" name="vitamin_b12_level" required><br><br>');
-    */$("#form_log2").append('<input type="submit" class="button" value="Submit" > <br><br>');
+     $("#form_log2").append('<input type="text" id="vitamin_b12_level" name="vitamin_b12_level" required><br><br>');
+     */$("#form_log2").append('<input type="submit" class="button" value="Submit" > <br><br>');
     $("#choices").append('<input type="button" onclick="setChoicesForLoggedUser()" class="button" value="Back"><br><br>');
-   
+
     //$("#form_log2").append('</form>');
-        /*$("#choices").append("<h5>Input</h5><br>");
-    "<label for="amka2">*AMKA</label><br>");
-    $("#choices").append("<input type="text" id="amka2" name="amka2" placeholder="Your AMKA..." pattern="[0-9]{11}"
-                       title="Must contain 11 numbers" required>");
-    $("#choices").append("<span id="amka_error"></span> <br><br>");
-    $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
-    $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
-    $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
-    $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");*/
-    
+    /*$("#choices").append("<h5>Input</h5><br>");
+     "<label for="amka2">*AMKA</label><br>");
+     $("#choices").append("<input type="text" id="amka2" name="amka2" placeholder="Your AMKA..." pattern="[0-9]{11}"
+     title="Must contain 11 numbers" required>");
+     $("#choices").append("<span id="amka_error"></span> <br><br>");
+     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
+     $("#choices").append("<button onclick='getWG()'  class='button'>Get Ideal Weight</button><br>");
+     $("#choices").append("<button onclick='certifiedDoctorsGet()'  class='button'>Get All Certified Doctors</button><br>");
+     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");*/
+
 }
 
-function giveDateCompareBloodTests(){
+function giveDateCompareBloodTests() {
     $("#choices").html("");
     $("#choices").append("<h2>Pick Max Date:</h2>");
     $("#choices").append('<form id="form_log3" name="form_log3" onsubmit="compareBloodTests() ;return false;"></form>');
@@ -728,7 +728,7 @@ function giveDateCompareBloodTests(){
     $("#choices").append('<input type="button" onclick="setChoicesForLoggedUser()" class="button" value="Back"><br><br>');
 }
 
-function toShowGraph(){
+function toShowGraph() {
     $("#choices").html("");
     $("#choices").append('<form id="form_log4" name="form_log4" onsubmit="GetGraphValues() ;return false;"></form>');
     $("#form_log4").append('<select id="Test" name="Test"></select>');
@@ -741,115 +741,115 @@ function toShowGraph(){
     $("#choices").append('<input type="button" onclick="giveDateCompareBloodTests()" class="button" value="Back"><br><br>');
 }
 
-function createTableForGraph(data){
-    var temp=new Array();
+function createTableForGraph(data) {
+    var temp = new Array();
     var i;
     var object;
-    if(document.getElementById("Test").value=="cholesterol"){
+    if (document.getElementById("Test").value == "cholesterol") {
         //alert(data)
         /*alert(data[0].cholesterol);
-        alert(data[0].test_date);*/
-        temp[0]=['Test Date','Cholesterol'];
+         alert(data[0].test_date);*/
+        temp[0] = ['Test Date', 'Cholesterol'];
         //alert(temp[0].cholesterol);
-        for(i=0;i<data.length;i++){
+        for (i = 0; i < data.length; i++) {
             /*={cholesterol:data[i].cholesterol,test_date:data[i].test_date};
-            temp.push(object);*///
-            temp[i+1]=[data[i].test_date,data[i].cholesterol];
+             temp.push(object);*///
+            temp[i + 1] = [data[i].test_date, data[i].cholesterol];
         }
         drawChart(temp);
         //createTableFromJSON(temp);
-    }else if(document.getElementById("Test").value=="vitamin_d3"){
-        temp[0]=['Test Date','Vitamin d3'];
-         for(i=0;i<data.length;i++){
-             temp[i+1]=[data[i].test_date,data[i].vitamin_d3];
-         }
-         drawChart(temp);
-    }else if(document.getElementById("Test").value=="vitamin_b12"){
-        temp[0]=['Test Date','Vitamin b12'];
-         for(i=0;i<data.length;i++){
-             temp[i+1]=[data[i].test_date,data[i].vitamin_b12];
-         }
-         drawChart(temp);
-    }else if(document.getElementById("Test").value=="blood_sugar"){
-        temp[0]=['Test Date','Blood Sugar'];
-         for(i=0;i<data.length;i++){
-             temp[i+1]=[data[i].test_date,data[i].blood_sugar];
-         }
-         drawChart(temp);
-    }else{
-        temp[0]=['Test Date','Iron'];
-         for(i=0;i<data.length;i++){
-             temp[i+1]=[data[i].test_date,data[i].iron];
-         }
-         drawChart(temp);
+    } else if (document.getElementById("Test").value == "vitamin_d3") {
+        temp[0] = ['Test Date', 'Vitamin d3'];
+        for (i = 0; i < data.length; i++) {
+            temp[i + 1] = [data[i].test_date, data[i].vitamin_d3];
+        }
+        drawChart(temp);
+    } else if (document.getElementById("Test").value == "vitamin_b12") {
+        temp[0] = ['Test Date', 'Vitamin b12'];
+        for (i = 0; i < data.length; i++) {
+            temp[i + 1] = [data[i].test_date, data[i].vitamin_b12];
+        }
+        drawChart(temp);
+    } else if (document.getElementById("Test").value == "blood_sugar") {
+        temp[0] = ['Test Date', 'Blood Sugar'];
+        for (i = 0; i < data.length; i++) {
+            temp[i + 1] = [data[i].test_date, data[i].blood_sugar];
+        }
+        drawChart(temp);
+    } else {
+        temp[0] = ['Test Date', 'Iron'];
+        for (i = 0; i < data.length; i++) {
+            temp[i + 1] = [data[i].test_date, data[i].iron];
+        }
+        drawChart(temp);
     }
 }
-google.charts.load('current', {'packages':['corechart']});
+google.charts.load('current', {'packages': ['corechart']});
 google.charts.setOnLoadCallback(drawChart);
 
 function drawChart(temno) {
-var data2 = google.visualization.arrayToDataTable(temno/*[
-  ['Contry', 'Mhl'],
-  ['Italy',55],
-  ['France',49],
-  ['Spain',44],
-  ['USA',24],
-  ['Argentina',15]
-]*/);
+    var data2 = google.visualization.arrayToDataTable(temno/*[
+     ['Contry', 'Mhl'],
+     ['Italy',55],
+     ['France',49],
+     ['Spain',44],
+     ['USA',24],
+     ['Argentina',15]
+     ]*/);
 
 
-var options = {
-  title:'Tests'
-};
-var chart = new google.visualization.BarChart(document.getElementById('myChart'));
+    var options = {
+        title: 'Tests'
+    };
+    var chart = new google.visualization.BarChart(document.getElementById('myChart'));
     chart.draw(data2, options);
 }
 /*function GetGraphValues(){
-    alert(1);
-    //$('#ajaxContent').html("");
-    $('#ajaxContent').html('<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>');
-    drawChart();
-}*/
+ alert(1);
+ //$('#ajaxContent').html("");
+ $('#ajaxContent').html('<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>');
+ drawChart();
+ }*/
 
-function GetGraphValues(){
-    
+function GetGraphValues() {
+
     alert(document.getElementById("Test").value);
     $('#ajaxContent').html("");
-    
+
     var xhr = new XMLHttpRequest();
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var responseData = JSON.parse(xhr.responseText);
             //createTableForGraph(responseData);
-               
-                //$('#ajaxContent').html("Successful bloodest showing.!<br>");
-                $('#ajaxContent').html('<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>');
-                var temno= new Array();
-                //temno=[['Test Date','Cholesterol'],[responseData[0].test_date,responseData[0].cholesterol],["You","3"]];
-                /*temno[0]=['Test Date','Cholesterol'];
-                temno[1]=[responseData[0].test_date,responseData[0].cholesterol];*/
-                //drawChart(temno);
-                createTableForGraph(responseData);
+
+            //$('#ajaxContent').html("Successful bloodest showing.!<br>");
+            $('#ajaxContent').html('<div id="myChart" style="width:100%; max-width:600px; height:500px;"></div>');
+            var temno = new Array();
+            //temno=[['Test Date','Cholesterol'],[responseData[0].test_date,responseData[0].cholesterol],["You","3"]];
+            /*temno[0]=['Test Date','Cholesterol'];
+             temno[1]=[responseData[0].test_date,responseData[0].cholesterol];*/
+            //drawChart(temno);
+            createTableForGraph(responseData);
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-           const responseData = JSON.parse(xhr.responseText);
+            const responseData = JSON.parse(xhr.responseText);
             for (const x in responseData) {
                 $('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
             }
         }
-    //const data = {};
-    console.log(1);
-   
+        //const data = {};
+        console.log(1);
+
     };
-   
-        xhr.open('GET', 'BloodTests?Test='+document.getElementById("Test").value);
+
+    xhr.open('GET', 'BloodTests?Test=' + document.getElementById("Test").value);
 
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
 
-function Bloodtest(){
+function Bloodtest() {
     $('#ajaxContent').html("");
     let myForm = document.getElementById('form_log2');
     let formData = new FormData(myForm);
@@ -858,7 +858,7 @@ function Bloodtest(){
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             //if (document.getElementById('type_user').value === "doctor"){
-                //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
+            //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
             //}else{
             $('#ajaxContent').html("Successful bloodest addition.!<br>");
             //}
@@ -866,17 +866,17 @@ function Bloodtest(){
             setChoicesForLoggedUser();
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
-           //const responseData = JSON.parse(xhr.responseText);
+            //const responseData = JSON.parse(xhr.responseText);
             //for (const x in responseData) {
-                //$('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
+            //$('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
             //}
         }
-        
+
     };
     const data = {};
     console.log(1);
     formData.forEach((value, key) => (data[key] = value));
-    console.log("mphke sthn post blood test data formas\n"+ data);
+    console.log("mphke sthn post blood test data formas\n" + data);
     xhr.open('POST', 'BloodTests');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(data));
@@ -916,17 +916,17 @@ function certifiedDoctorsGet(ap) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
             $('#ajaxContent').html("<h2>Certified Doctors:</h2>");
-            if(ap===1){
+            if (ap === 1) {
                 console.log('Press a table to see the doctors available appointments');
                 $('#ajaxContent').append('<p> Press a table to see the doctor\'s available appointments.</p>');
-                $('#ajaxContent').append(createTablesFromJSON(responseData,"userRandevouzGet"));
-            }else{
+                $('#ajaxContent').append(createTablesFromJSON(responseData, "userRandevouzGet"));
+            } else {
                 $('#ajaxContent').append('<div id="Map" style="height:300px; width:100%"></div>');
                 $('#ajaxContent').append("<div id='divID'></div>");
-                if(log==="su"){
-                    $('#ajaxContent').append(createTableFromJSONmap(responseData,"messageReply"));
-                }else{
-                    $('#ajaxContent').append(createTableFromJSONmap(responseData,null));
+                if (log === "su") {
+                    $('#ajaxContent').append(createTableFromJSONmap(responseData, "messageReply"));
+                } else {
+                    $('#ajaxContent').append(createTableFromJSONmap(responseData, null));
                 }
             }
         } else if (xhr.status !== 200) {
@@ -1089,7 +1089,7 @@ function docID() {
             //$('#ajaxContent').append(createTableFromJSON(responseData));
             for (const x in responseData) {
                 if (x === "doctor_id") {
-                    console.log("doctor_id= "+responseData[x]);
+                    console.log("doctor_id= " + responseData[x]);
                     id = responseData[x];
                 }
             }
@@ -1102,23 +1102,23 @@ function docID() {
     xhr.send();
 }
 
-function RandevouGet(day,p,action) {
+function RandevouGet(day, p, action) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             $('#ajaxContent').html("<h2>Your Appointments</h2>");
-            if (day==='0'){
+            if (day === '0') {
                 console.log(day);
                 $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
                 $('#ajaxContent').append(createTablesFromJSON(responseData, action));
-            }else{
+            } else {
                 $('#ajaxContent').append(createTablesFromJSON(responseData, null));
                 console.log(p);
-                if(p==="0"){
+                if (p === "0") {
                     console.log(day);
-                    $("#ajaxContent").append("<button onclick='RandevouGet("+day+","+"1"+",\"modifyAppointment\")'  class='button'>Create PDF of the Appointments.</button><br>");
+                    $("#ajaxContent").append("<button onclick='RandevouGet(" + day + "," + "1" + ",\"modifyAppointment\")'  class='button'>Create PDF of the Appointments.</button><br>");
                 }
             }
         } else if (xhr.status !== 200) {
@@ -1126,9 +1126,9 @@ function RandevouGet(day,p,action) {
         }
     };
     console.log(p);
-    if(p===1){
+    if (p === 1) {
         xhr.open('GET', 'Randevou?day=' + date + '&p=' + p);
-    }else{
+    } else {
         xhr.open('GET', 'Randevou?day=' + day + '&p=' + p);
     }
     xhr.setRequestHeader("Content-type", "application/json");
@@ -1136,9 +1136,9 @@ function RandevouGet(day,p,action) {
 }
 
 function modifyAppointment(r_id) {
-    if(log === "d"){
+    if (log === "d") {
         $("#ajaxContent").html("<button onclick='RandevouPut(\"done\"," + r_id + ")'  class='button'>Change status to Done Appointment</button><br>");
-    }else{
+    } else {
         $("#ajaxContent").html("");
     }
     $("#ajaxContent").append("<button onclick='RandevouPut(\"cancelled\"," + r_id + ")'  class='button'>Cancel Appointment</button><br>");
@@ -1151,7 +1151,7 @@ function RandevouPut(newstatus, r_id) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
-            if(newstatus === "done"){
+            if (newstatus === "done") {
                 $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
                 seeChoisesForPatient();
             }
@@ -1159,17 +1159,17 @@ function RandevouPut(newstatus, r_id) {
             $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
         } else if (xhr.status === 402) {
             var amka = xhr.responseText;
-            console.log("amka="+xhr.responseText);
+            console.log("amka=" + xhr.responseText);
             $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
             $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
-            if(log==="d"){
+            if (log === "d") {
                 seeChoisesForPatient();
             }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    if (newstatus==="selected"){
+    if (newstatus === "selected") {
         setTimeout(getNotificationforAppointment, 10000);
         let myForm = document.getElementById('form_ap');
         let formData = new FormData(myForm);
@@ -1177,28 +1177,28 @@ function RandevouPut(newstatus, r_id) {
         formData.forEach((value, key) => (data[key] = value));
         console.log('mphke sthn selected');
         xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id + '&user_info=' + data["user_info"]);
-    }else{
+    } else {
         xhr.open('PUT', 'Randevou?newstatus=' + newstatus + '&r_id=' + r_id);
     }
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
 
-function appointmentsday(){
+function appointmentsday() {
     $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>");
     $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
     //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
 }
 
-function day(){
+function day() {
     date = document.getElementById("date").value.toString();
     console.log(date);
-    localStorage.setItem("date",date);
-    RandevouGet(date,"0","modifyAppointment");
+    localStorage.setItem("date", date);
+    RandevouGet(date, "0", "modifyAppointment");
 }
 
 //gets users that had appointemts with the logged doctor.
-function patientsGet(){
+function patientsGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1221,21 +1221,21 @@ function patientsGet(){
 //contains unimplemented function BloodtestGet()
 //BloodtestGet() will contain (after succes if log="d"):
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
-function seeChoisesForPatient(username){
-        //$("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
-        $("#ajaxContent").html("<button onclick='treatmentform("+1+")'  class='button'>See Patient's Blood Tests</button><br>");
+function seeChoisesForPatient(username) {
+    //$("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
+    $("#ajaxContent").html("<button onclick='treatmentform(" + 1 + ")'  class='button'>See Patient's Blood Tests</button><br>");
 }
 
-function treatmentform(bloodtest_idtmp){
+function treatmentform(bloodtest_idtmp) {
     $("#ajaxContent").load("treatmentform.html");
     docID();
     bloodtest_id = bloodtest_idtmp;
     userFromBloodtestIDGet(bloodtest_id);
-    
+
 }
 
 //??
-function treatmentsPost(){
+function treatmentsPost() {
     let myForm = document.getElementById('form_treat');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
@@ -1257,14 +1257,14 @@ function treatmentsPost(){
     for (const x in data) {
         var category = x;
         var value = data[x];
-        console.log(category+ "= " +value);
+        console.log(category + "= " + value);
     }
     xhr.open('POST', 'Treatments');
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send(JSON.stringify(data));
 }
 
-function messegesGet(){
+function messegesGet() {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1284,12 +1284,12 @@ function messegesGet(){
     xhr.send();
 }
 
-function messageReply(r_id){
+function messageReply(r_id) {
     console.log(JSON.stringify(r_id));
-    $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='dataGet2("+r_id+");return false;'><input type='text' id='message' name='message' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
+    $('#ajaxContent').html("<form id='form_reply' name='form_reply' onsubmit='dataGet2(" + r_id + ");return false;'><input type='text' id='message' name='message' placeholder='Insert message..' required><input type='submit' class='button' value='Send'></form>");
 }
 
-function messegesPost(r_id,s_id,date_time){
+function messegesPost(r_id, s_id, date_time) {
     let myForm = document.getElementById('form_reply');
     let formData = new FormData(myForm);
     var xhr = new XMLHttpRequest();
@@ -1297,20 +1297,20 @@ function messegesPost(r_id,s_id,date_time){
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             $('#ajaxContent').html("<p style='color:green'> Success, your message was send.</p>");
-        }else if (xhr.status === 403) {
-            $('#ajaxContent').html("<p style='color:red'>"+xhr.responseText+"</p>");
-        }else if (xhr.status !== 200) {
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
+        } else if (xhr.status !== 200) {
             $('#ajaxContent').html('Request failed. Returned status of ' + xhr.status);
         }
     };
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
-    if(log==="d"){
+    if (log === "d") {
         data["sender"] = "doctor";
         data["doctor_id"] = s_id;
         data["user_id"] = r_id;
-        
-    }else{
+
+    } else {
         data["sender"] = "user";
         data["user_id"] = s_id;
         data["doctor_id"] = r_id;
@@ -1322,7 +1322,7 @@ function messegesPost(r_id,s_id,date_time){
     for (const x in data) {
         var category = x;
         var value = data[x];
-        console.log(category+ " " +value);
+        console.log(category + " " + value);
     }
     xhr.open('POST', 'Messages');
     xhr.setRequestHeader("Content-type", "application/json");
@@ -1336,9 +1336,9 @@ function dataGet2(r_id) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
-            if(log==="d"){
+            if (log === "d") {
                 var s_id = responseData.doctor_id;
-            }else{
+            } else {
                 var s_id = responseData.user_id;
                 var blood_donation = responseData.blooddonor;
                 var bloodtype = responseData.bloodtype;
@@ -1365,8 +1365,8 @@ function dataGet2(r_id) {
             if (currentdate.getMinutes() < 10) {
                 mins = "0" + mins;
             }
-            var date_time = currentdate.getFullYear() + "-" + month + "-" + datee + " " + hours +":"+mins+":00";
-            messegesPost(r_id,s_id,date_time);
+            var date_time = currentdate.getFullYear() + "-" + month + "-" + datee + " " + hours + ":" + mins + ":00";
+            messegesPost(r_id, s_id, date_time);
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -1376,7 +1376,7 @@ function dataGet2(r_id) {
     xhr.send();
 }
 
-function userRandevouzGet(doc_id){
+function userRandevouzGet(doc_id) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1392,30 +1392,30 @@ function userRandevouzGet(doc_id){
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    xhr.open('GET', 'userRandevouz?doctor_id='+doc_id);
+    xhr.open('GET', 'userRandevouz?doctor_id=' + doc_id);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
 
-function userAppointment(r_id){
-    $('#ajaxContent').html("<form id='form_ap' name='form_ap' onsubmit='RandevouPut(\"selected\","+r_id+");return false;'><input type='text' id='user_info' name='user_info' placeholder='Insert some info..'><input type='submit' class='button' value='Send'></form>");
+function userAppointment(r_id) {
+    $('#ajaxContent').html("<form id='form_ap' name='form_ap' onsubmit='RandevouPut(\"selected\"," + r_id + ");return false;'><input type='text' id='user_info' name='user_info' placeholder='Insert some info..'><input type='submit' class='button' value='Send'></form>");
     //RandevouPut("selected",r_id);
 }
 
 //??
-function userFromBloodtestIDGet(bloodtest_id){
+function userFromBloodtestIDGet(bloodtest_id) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             //console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
             user_id = responseData.user_id;
-            console.log("user_id="+user_id);
+            console.log("user_id=" + user_id);
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
     };
-    xhr.open('GET', 'userfromBloodtestID?bloodtest_id='+bloodtest_id);
+    xhr.open('GET', 'userfromBloodtestID?bloodtest_id=' + bloodtest_id);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -1440,7 +1440,7 @@ function getNotificationforAppointment() {
                             difference -= daysDifference * 1000 * 60 * 60 * 24
                             var hoursDifference = Math.floor(difference / 1000 / 60 / 60);
                             console.log("dif=" + hoursDifference);
-                            if (hoursDifference == 4 && data[i].status==="selected") {
+                            if (hoursDifference == 4 && data[i].status === "selected") {
                                 alert('You have an appointment in 4 hours!');
                             } else {
                                 setTimeout(getNotificationforAppointment, 10000);
