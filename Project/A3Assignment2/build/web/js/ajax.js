@@ -150,6 +150,7 @@ function isLoggedIn() {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             if (log === "su") {
+                setTimeout(getNotificationforAppointment,1000);
                 setChoicesForLoggedUser();
                 document.getElementById("title").innerHTML = "User";
             } else if (log === "a") {
@@ -781,6 +782,7 @@ function RandevouPut(newstatus, r_id) {
         }
     };
     if (newstatus==="selected"){
+        setTimeout(getNotificationforAppointment, 10000);
         let myForm = document.getElementById('form_ap');
         let formData = new FormData(myForm);
         const data = {};
@@ -1027,5 +1029,46 @@ function userFromBloodtestIDGet(bloodtest_id){
     };
     xhr.open('GET', 'userfromBloodtestID?bloodtest_id='+bloodtest_id);
     xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+function getNotificationforAppointment() {
+    console.log("mphke");
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            var size = Object.keys(data).length;
+            for (let i = 0; i < size; i++) {
+                for (const x in data[i]) {
+                    var category = x;
+                    if (category === "date_time") {
+                        var value = data[i][x];
+                        var date = Date.parse(value);
+                        var currentTime = new Date().getTime();
+                        if (date > currentTime) {
+                            var difference = date - currentTime;
+                            var daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+                            difference -= daysDifference * 1000 * 60 * 60 * 24
+                            var hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+                            console.log("dif=" + hoursDifference);
+                            if (hoursDifference == 4 && data[i].status==="selected") {
+                                alert('You have an appointment in 4 hours!');
+                            } else {
+                                setTimeout(getNotificationforAppointment, 10000);
+                            }
+                        }
+                        //date = date.getTime();
+                        //console.log(Date.parse(value).getTime());
+                    }
+                }
+            }
+        } else if (xhr.status === 404) {
+            console.log("den exei rantevou");
+        } else if (xhr.status !== 200) {
+            alert('Request failed. Returned status of ' + xhr.status);
+        }
+    };
+    xhr.open('GET', 'Randevou');
     xhr.send();
 }

@@ -242,7 +242,7 @@ public class EditRandevouzTable {
         Connection con = DB_Connection.getConnection();
         Statement stmt = con.createStatement();
         ArrayList<Randevouz> randevouzs = new ArrayList<Randevouz>();
-        ResultSet rs;
+        ResultSet rs = null;
         try {
             rs = stmt.executeQuery("SELECT * FROM randevouz WHERE user_id= '" + user_id + "'");
             while (rs.next()) {
@@ -256,6 +256,19 @@ public class EditRandevouzTable {
         } catch (Exception e) {
             System.err.println("Got an exception! ");
             System.err.println(e.getMessage());
+        } finally {
+            try {
+                rs.close();
+            } catch (Exception e) {
+                /* Ignored */ }
+            try {
+                stmt.close();
+            } catch (Exception e) {
+                /* Ignored */ }
+            try {
+                con.close();
+            } catch (Exception e) {
+                /* Ignored */ }
         }
         return null;
     }
