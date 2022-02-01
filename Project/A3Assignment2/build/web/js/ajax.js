@@ -882,6 +882,7 @@ function Bloodtest(){
     xhr.send(JSON.stringify(data));
     //uploadBloodTests();
 }
+
 function getIdealWeight() {
     if (height !== null) {
         const data = null;
