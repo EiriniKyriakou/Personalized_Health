@@ -367,7 +367,7 @@ function giveBloodTests(){
     //if(document.getElementById('type_user').value === "doctor"){
         xhr.open('GET', 'BloodTests');
         
-    //}else{
+    //}else{x
         //xhr.open('POST', 'Register');
     //}
     xhr.setRequestHeader("Content-type", "application/json");
@@ -799,7 +799,7 @@ var data2 = google.visualization.arrayToDataTable(temno/*[
 
 
 var options = {
-  title:'World Wide Wine Production'
+  title:'Tests'
 };
 var chart = new google.visualization.BarChart(document.getElementById('myChart'));
     chart.draw(data2, options);
