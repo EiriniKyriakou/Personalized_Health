@@ -54,8 +54,8 @@ public class CertifiedDoctors extends HttpServlet {
         System.out.println("mphke sthn getdoctor");
         try (PrintWriter out = response.getWriter()) {
             //JSONConverter jc = new JSONConverter();
-            int certified = 1;
-            EditDoctorTable edt = new EditDoctorTable();
+            int certified = 1;EditDoctorTable edt = new EditDoctorTable();
+
             ArrayList<Doctor> d = new ArrayList<Doctor>();
             d = edt.databaseToCertifiedDoctors(certified);
             if (d == null) {

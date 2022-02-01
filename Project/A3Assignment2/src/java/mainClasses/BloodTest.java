@@ -13,7 +13,7 @@ package mainClasses;
 public class BloodTest {
     int bloodtest_id;
     String amka;
-    String test_date;
+    public String test_date;
     String medical_center;
     double vitamin_d3;
     String vitamin_d3_level;

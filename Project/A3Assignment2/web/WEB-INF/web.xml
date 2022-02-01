@@ -40,6 +40,10 @@
         <servlet-name>Randevou</servlet-name>
         <servlet-class>servlets.Randevou</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>BloodTests</servlet-name>
+        <servlet-class>servlets.BloodTests</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -79,6 +83,10 @@
     <servlet-mapping>
         <servlet-name>Randevou</servlet-name>
         <url-pattern>/Randevou</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BloodTests</servlet-name>
+        <url-pattern>/BloodTests</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

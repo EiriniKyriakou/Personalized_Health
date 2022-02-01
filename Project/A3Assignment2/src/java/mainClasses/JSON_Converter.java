@@ -38,6 +38,19 @@ public class JSON_Converter {
         return json;
     }
 
+    public BloodTest jsonToBloodTest(BufferedReader json) {
+        Gson gson = new Gson();
+        BloodTest msg = gson.fromJson(json, BloodTest.class);
+        return msg;
+    }
+
+    public String BloodTestToJSon(BloodTest bdt) {
+        Gson gson = new Gson();
+
+        String json = gson.toJson(bdt, BloodTest.class);
+        return json;
+    }
+
     public Randevouz jsonToRandevouz(BufferedReader json) {
         Gson gson = new Gson();
         Randevouz msg = gson.fromJson(json, Randevouz.class);
