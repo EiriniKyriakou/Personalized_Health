@@ -326,7 +326,7 @@ function RegisterPOST() {
             }else{
                 $('#ajaxContent').html("Successful Registration.!<br>");
             }
-            $('#ajaxContent').append(createTableFromJSON(responseData));
+            //$('#ajaxContent').append(createTableFromJSON(responseData));
         } else if (xhr.status === 403){
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". User already exists!<br>");
         } else if (xhr.status === 402){

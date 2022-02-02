@@ -96,7 +96,7 @@ public class BloodTests extends HttpServlet {
                 //String date = request.getParameter("date");
                 //String Test = request.getParameter("Test");
                 if (date != null) {
-                    System.out.println(date);
+                    System.out.println("\tmphke sthn date=" + date);
                     ArrayList<BloodTest> d = new ArrayList<BloodTest>();
                     String username = session.getAttribute("loggedIn").toString();
                     EditBloodTestTable edt = new EditBloodTestTable();
@@ -125,7 +125,7 @@ public class BloodTests extends HttpServlet {
                                     System.out.println(d.get(i + 1).test_date);
                                     System.out.println(d.get(i).test_date.compareTo(d.get(i + 1).test_date));
                                     if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == 1) {
-                                        System.out.println("nai2");
+                                        System.out.println("\t\tnai2");
                                         BloodTest temp = d.get(i);
                                         d.set(i, d.get(i + 1));
                                         d.set(i + 1, temp);
@@ -141,7 +141,7 @@ public class BloodTests extends HttpServlet {
                         response.setStatus(200);
                     }
                 } else if (Test != null) {
-                    System.out.println("!");
+                    System.out.println("\tmphke sthn test");
                     ArrayList<BloodTest> d = new ArrayList<BloodTest>();
                     String username = session.getAttribute("loggedIn").toString();
                     EditBloodTestTable edt = new EditBloodTestTable();
@@ -150,13 +150,15 @@ public class BloodTests extends HttpServlet {
                     String amka;
                     if (d1 != null) {
                         amka = request.getParameter("amka");
+                        System.out.println("\t\tamka apo giatro=" + amka);
                     } else {
                         amka = bt.getAmka();
+                        System.out.println("\t\tamka apo xrhsth=" + amka);
                     }
+                    d = edt.databaseToTest(amka, Test);
                     if (d.isEmpty()) {
                         response.setStatus(403);
                     } else {
-                        d = edt.databaseToTest(amka, Test);
                         Gson gson = new Gson();
                         String json = gson.toJson(d);
                         out.println(json);
