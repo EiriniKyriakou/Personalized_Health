@@ -41,10 +41,6 @@
         <servlet-class>servlets.Randevou</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Patients</servlet-name>
-        <url-pattern>servlets.Patients</url-pattern>
-    </servlet>
-    <servlet>
         <servlet-name>Messages</servlet-name>
         <servlet-class>servlets.Messages</servlet-class>
     </servlet>
@@ -63,6 +59,10 @@
     <servlet>
         <servlet-name>BloodTests</servlet-name>
         <servlet-class>servlets.BloodTests</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Patients</servlet-name>
+        <servlet-class>servlets.Patients</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -105,10 +105,6 @@
         <url-pattern>/Randevou</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Patients</servlet-name>
-        <url-pattern>/Patients</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>Messages</servlet-name>
         <url-pattern>/Messages</url-pattern>
     </servlet-mapping>
@@ -127,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>BloodTests</servlet-name>
         <url-pattern>/BloodTests</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Patients</servlet-name>
+        <url-pattern>/Patients</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

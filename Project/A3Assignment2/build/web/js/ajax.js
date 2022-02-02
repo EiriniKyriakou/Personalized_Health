@@ -50,7 +50,11 @@ function createTablesFromJSON(data, action) {
                 }
             } else if (action === "userRandevouzGet") {
                 html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
-            } else {
+            } else if (action === "seeChoisesForPatient"){
+                html += "<button class='block' value='" + data[i].amka + "' onclick='" + action + "(this.value)'>";
+            } else if(action === "treatmentform"){
+                html += "<button class='block' value='" + data[i].bloodtest_id + "' onclick='" + action + "(this.value)'>";
+            }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
             }
         }
@@ -1149,21 +1153,27 @@ function RandevouPut(newstatus, r_id) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(xhr.responseText);
-            $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
+            
             if (newstatus === "done") {
-                $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
-                seeChoisesForPatient();
+                $('#ajaxContent').html("<p>Success!</p>");
+                var amka = xhr.responseText;
+                console.log("amka=" + xhr.responseText);
+                if (log === "d") {
+                    seeChoisesForPatient(amka);
+                }
+            }else{
+                console.log(xhr.responseText);
+                $('#ajaxContent').html("<p>" + xhr.responseText + "</p>");
             }
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p style='color:red'>" + xhr.responseText + "</p>");
         } else if (xhr.status === 402) {
             var amka = xhr.responseText;
             console.log("amka=" + xhr.responseText);
-            $('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
-            $("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
+            //$('#ajaxContent').html("<p> You can't change the status, but you can see the user's bloodtests.</p>");
+            //$("#ajaxContent").append("<button onclick='BloodtestGet()'  class='button'>See blood tests (not ready yet)</button><br>");
             if (log === "d") {
-                seeChoisesForPatient();
+                seeChoisesForPatient(amka);
             }
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -1221,9 +1231,9 @@ function patientsGet() {
 //contains unimplemented function BloodtestGet()
 //BloodtestGet() will contain (after succes if log="d"):
 //$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
-function seeChoisesForPatient(username) {
-    //$("#ajaxContent").html("<button onclick='BloodtestGet("+username+")'  class='button'>See Patient's Blood Tests</button><br>");
-    $("#ajaxContent").html("<button onclick='treatmentform(" + 1 + ")'  class='button'>See Patient's Blood Tests</button><br>");
+function seeChoisesForPatient(amka) {
+    $("#ajaxContent").html("<button onclick='BloodtestGet("+amka+")'  class='button'>See Patient's Blood Tests!</button><br>");
+    //$("#ajaxContent").html("<button onclick='treatmeBloodtestGetntform(" + 1 + ")'  class='button'>See Patient's Blood Tests</button><br>");
 }
 
 function treatmentform(bloodtest_idtmp) {
@@ -1461,3 +1471,30 @@ function getNotificationforAppointment() {
     xhr.send();
 }
 
+function BloodtestGet(amka){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const responseData = JSON.parse(xhr.responseText);
+            console.log("eirini"+xhr.responseText);
+            $('#ajaxContent').html("<h2>Patient's Bloodtests:</h2> <p>Press to add treatment.<br></p>");
+            $('#ajaxContent').append(createTablesFromJSON(responseData,"treatmentform"));
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p>Patient has no blood tests.<br></p>");
+        }else if (xhr.status !== 200) {
+            $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
+            //const responseData = JSON.parse(xhr.responseText);
+            //for (const x in responseData) {
+            //$('#ajaxContent').append("<p style='color:red'>" + x + "=" + responseData[x] + "</p>");
+            //}
+        }
+
+    };
+    //amka = amka.toString();
+    while(amka.toString().length<11){
+        amka = "0"+amka;
+    }
+    xhr.open('GET', 'BloodTests?amka='+amka);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}

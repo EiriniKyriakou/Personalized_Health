@@ -206,12 +206,22 @@ public class Randevou extends HttpServlet {
                         String user_info = request.getParameter("user_info");
                         System.out.println(user_info);
                         ert.updateRandevouz(r_id, su.getUser_id(), user_info, newstatus);
+                        out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
+                        response.setStatus(200);
+                    } else if (newstatus.equals("done")) {
+                        ert.updateRandevouz(r_id, newstatus);
+                        int userid = r.getUser_id();
+                        EditSimpleUserTable esut = new EditSimpleUserTable();
+                        SimpleUser su = esut.databaseToSimpleUserUserID(userid);
+                        out.println(su.getAmka());
+                        response.setStatus(200);
                     } else {
                         System.out.println("else");
                         ert.updateRandevouz(r_id, newstatus);
+                        out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
+                        response.setStatus(200);
                     }
-                    out.println("Success!<br>Now the status of this appointment is " + newstatus + ".");
-                    response.setStatus(200);
+
                 }
             }
         } catch (SQLException | ClassNotFoundException ex) {
