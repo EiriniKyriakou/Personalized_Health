@@ -53,7 +53,7 @@ function createTablesFromJSON(data, action) {
             } else if (action === "seeChoisesForPatient"){
                 html += "<button class='block' value='" + data[i].amka + "' onclick='" + action + "(this.value)'>";
             } else if(action === /*"treatmentform"*/ "TreatmentsGet"){
-                $('#ajaxContent').append("<div id='" + data[i].bloodtest_id + "' ></div>");
+                //$('#ajaxContent').append("<div id='" + data[i].bloodtest_id + "' ></div>");
                 html += "<button class='block' value='" + data[i].bloodtest_id + "' onclick='" + action + "(this.value)'>";
             }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
@@ -1515,12 +1515,14 @@ function TreatmentsGet(bloodtest_id){
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(xhr.responseText);
-            $('#'+bloodtest_id.toString()).append("<h4>Treatment:</h4>");
-            $('#'+bloodtest_id.toString()).append("<p>(for the following bloodtest)</p>");
-            $('#'+bloodtest_id.toString()).append(createTableFromJSON(responseData));
+            $('#ajaxContent').append("<p>Treatment:<br>(for the above bloodtest)</p>");
+            $('#ajaxContent').append(createTableFromJSON(responseData));
         } else if (xhr.status === 403) {
-            //$('#ajaxContent').append("<p>There is no treatment for this blood test.<br></p>");
-            treatmentform(bloodtest_id);
+            if(log==="su"){
+                $('#ajaxContent').append("<p>There is no treatment for this blood test.<br></p>");
+            }else{
+                treatmentform(bloodtest_id);
+            }
         }else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
         }
