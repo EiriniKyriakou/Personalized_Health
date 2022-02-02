@@ -7,6 +7,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import database.tables.EditBloodTestTable;
+import database.tables.EditDoctorTable;
 import database.tables.EditSimpleUserTable;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mainClasses.BloodTest;
+import mainClasses.Doctor;
 import mainClasses.SimpleUser;
 
 /**
@@ -70,71 +72,91 @@ public class BloodTests extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             //int certified = 1;
             HttpSession session = request.getSession();
-            String date = request.getParameter("date");
-            String Test = request.getParameter("Test");
-            if (date != null) {
-                System.out.println(date);
+            String username1 = session.getAttribute("loggedIn").toString();
+            EditDoctorTable edt1 = new EditDoctorTable();
+            Doctor d1 = edt1.databaseToDoctorUsername(username1);
+            if (d1 != null) {
+                String amka1 = request.getParameter("amka");
+                System.out.println("\tamka=" + amka1 + ".");
                 ArrayList<BloodTest> d = new ArrayList<BloodTest>();
-                String username = session.getAttribute("loggedIn").toString();
                 EditBloodTestTable edt = new EditBloodTestTable();
-                EditSimpleUserTable eut = new EditSimpleUserTable();
-                SimpleUser bt = eut.databaseToSimpleUserUsername(username);
-                String amka = bt.getAmka();
-                d = edt.databaseToBloodtestDate(amka, date);
-                int i = 0, j = 0;
-                if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == -1) {
-                    System.out.println(d.size());
+                d = edt.databaseToBloodtest(amka1);
+                if (d.isEmpty()) {
+                    response.setStatus(403);
+
+                } else {
+                    Gson gson = new Gson();
+                    String json = gson.toJson(d);
+                    System.out.println("\tbloodtests:" + json);
+                    out.println(json);
+                    response.setStatus(200);
                 }
-                if (d.size() > 1) {
-                    while (j == 0) {
-                        j = 1;
-                        for (i = 0; i < d.size() - 1; i++) {
-                            System.out.println(i);
-                            System.out.println(d.get(i).test_date);
-                            System.out.println(d.get(i + 1).test_date);
-                            System.out.println(d.get(i).test_date.compareTo(d.get(i + 1).test_date));
-                            if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == 1) {
-                                System.out.println("nai2");
-                                BloodTest temp = d.get(i);
-                                d.set(i, d.get(i + 1));
-                                d.set(i + 1, temp);
-                                j = 0;
+            } else {
+                String date = request.getParameter("date");
+                String Test = request.getParameter("Test");
+                if (date != null) {
+                    System.out.println(date);
+                    ArrayList<BloodTest> d = new ArrayList<BloodTest>();
+                    String username = session.getAttribute("loggedIn").toString();
+                    EditBloodTestTable edt = new EditBloodTestTable();
+                    EditSimpleUserTable eut = new EditSimpleUserTable();
+                    SimpleUser bt = eut.databaseToSimpleUserUsername(username);
+                    String amka = bt.getAmka();
+                    d = edt.databaseToBloodtestDate(amka, date);
+                    int i = 0, j = 0;
+                    if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == -1) {
+                        System.out.println(d.size());
+                    }
+                    if (d.size() > 1) {
+                        while (j == 0) {
+                            j = 1;
+                            for (i = 0; i < d.size() - 1; i++) {
+                                System.out.println(i);
+                                System.out.println(d.get(i).test_date);
+                                System.out.println(d.get(i + 1).test_date);
+                                System.out.println(d.get(i).test_date.compareTo(d.get(i + 1).test_date));
+                                if (d.get(i).test_date.compareTo(d.get(i + 1).test_date) == 1) {
+                                    System.out.println("nai2");
+                                    BloodTest temp = d.get(i);
+                                    d.set(i, d.get(i + 1));
+                                    d.set(i + 1, temp);
+                                    j = 0;
+                                }
                             }
                         }
                     }
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(d);
+                    out.println(json);
+                    response.setStatus(200);
+                } else if (Test != null) {
+                    System.out.println("!");
+                    ArrayList<BloodTest> d = new ArrayList<BloodTest>();
+                    String username = session.getAttribute("loggedIn").toString();
+                    EditBloodTestTable edt = new EditBloodTestTable();
+                    EditSimpleUserTable eut = new EditSimpleUserTable();
+                    SimpleUser bt = eut.databaseToSimpleUserUsername(username);
+                    String amka = bt.getAmka();
+                    d = edt.databaseToTest(amka, Test);
+                    Gson gson = new Gson();
+                    String json = gson.toJson(d);
+                    out.println(json);
+                    response.setStatus(200);
+                } else {
+                    EditBloodTestTable edt = new EditBloodTestTable();
+                    EditSimpleUserTable eut = new EditSimpleUserTable();
+                    ArrayList<BloodTest> d = new ArrayList<BloodTest>();
+                    String username = session.getAttribute("loggedIn").toString();
+                    SimpleUser bt = eut.databaseToSimpleUserUsername(username);
+                    String amka = bt.getAmka();
+                    d = edt.databaseToBloodtest(amka);
+                    Gson gson = new Gson();
+                    String json = gson.toJson(d);
+                    out.println(json);
+                    response.setStatus(200);
                 }
-
-                Gson gson = new Gson();
-                String json = gson.toJson(d);
-                out.println(json);
-                response.setStatus(200);
-            } else if (Test != null) {
-                System.out.println("!");
-                ArrayList<BloodTest> d = new ArrayList<BloodTest>();
-                String username = session.getAttribute("loggedIn").toString();
-                EditBloodTestTable edt = new EditBloodTestTable();
-                EditSimpleUserTable eut = new EditSimpleUserTable();
-                SimpleUser bt = eut.databaseToSimpleUserUsername(username);
-                String amka = bt.getAmka();
-                d = edt.databaseToTest(amka, Test);
-                Gson gson = new Gson();
-                String json = gson.toJson(d);
-                out.println(json);
-                response.setStatus(200);
-            } else {
-                EditBloodTestTable edt = new EditBloodTestTable();
-                EditSimpleUserTable eut = new EditSimpleUserTable();
-                ArrayList<BloodTest> d = new ArrayList<BloodTest>();
-                String username = session.getAttribute("loggedIn").toString();
-                SimpleUser bt = eut.databaseToSimpleUserUsername(username);
-                String amka = bt.getAmka();
-                d = edt.databaseToBloodtest(amka);
-                Gson gson = new Gson();
-                String json = gson.toJson(d);
-                out.println(json);
-                response.setStatus(200);
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(BloodTests.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {

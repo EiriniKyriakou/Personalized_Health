@@ -177,13 +177,18 @@ public class EditBloodTestTable {
         ArrayList<BloodTest> bloodtests = new ArrayList<BloodTest>();
         ResultSet rs;
         try {
+            System.out.println("mphke sql amka blood " + amka + ".");
             rs = stmt.executeQuery("SELECT * FROM bloodtest WHERE amka='" + amka + "'");
+            //System.out.println(rs.next());
+            //System.out.println(rs.next());
             while (rs.next()) {
+                System.out.println("mphke");
                 String json = DB_Connection.getResultsToJSON(rs);
                 Gson gson = new Gson();
                 BloodTest r = gson.fromJson(json, BloodTest.class);
                 bloodtests.add(r);
             }
+            System.out.println("sql" + bloodtests);
             return bloodtests;
 
         } catch (Exception e) {
