@@ -52,7 +52,8 @@ function createTablesFromJSON(data, action) {
                 html += "<button class='block' value='" + data[i].doctor_id + "' onclick='" + action + "(this.value)'>";
             } else if (action === "seeChoisesForPatient"){
                 html += "<button class='block' value='" + data[i].amka + "' onclick='" + action + "(this.value)'>";
-            } else if(action === "treatmentform"){
+            } else if(action === /*"treatmentform"*/ "TreatmentsGet"){
+                $('#ajaxContent').append("<div id='" + data[i].bloodtest_id + "' ></div>");
                 html += "<button class='block' value='" + data[i].bloodtest_id + "' onclick='" + action + "(this.value)'>";
             }else {
                 html += "<button class='block' value='" + data[i].username + "' onclick='" + action + "(this.value)'>";
@@ -69,7 +70,7 @@ function createTablesFromJSON(data, action) {
         }
         html += "</table>";
         if (action !== null) {
-            html += "</buttom><br><br>";
+            html += "</buttom><br>";
         } else {
             html += "<br>";
         }
@@ -332,6 +333,14 @@ function setChoicesForAdmin() {
     $("#choices").append("<button onclick='logoutPost()'  class='button'>Logout</button><br>");
 }
 
+//contains unimplemented function BloodtestGet()
+//BloodtestGet() will contain (after succes if log="d"):
+//$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
+function seeChoisesForPatient(amka) {
+    $("#ajaxContent").html("<button onclick='BloodtestGet("+amka+")'  class='button'>See Patient's Blood Tests.</button><br>");
+    $("#ajaxContent").append("<button onclick='giveDateCompareBloodTests("+amka+")' class='button'>Compare Blood Tests!</button><br>");
+    //$("#ajaxContent").html("<button onclick='treatmeBloodtestGetntform(" + 1 + ")'  class='button'>See Patient's Blood Tests</button><br>");
+}
 
 function giveBloodTests() {
     /*alert(12);
@@ -342,19 +351,11 @@ function giveBloodTests() {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
-            //if (document.getElementById('type_user').value === "doctor"){
-            //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
-            //}else{
             $('#ajaxContent').html("Successful bloodest showing.!<br>");
-            //}
             $('#ajaxContent').append(createTablesFromJSON(responseData, null));
-            setChoicesForLoggedUser();
-            //} else if (xhr.status === 403){
-            //$('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". User already exists!<br>");
-            //} else if (xhr.status === 402){
-            //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
-            //} else if (xhr.status === 401){
-            // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
+            isLoggedIn();
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'>There are no blood tests!<br></p>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
             const responseData = JSON.parse(xhr.responseText);
@@ -432,7 +433,7 @@ function sortBloodTests(data) {
     }
 }
 
-function compareBloodTests() {
+function compareBloodTests(amka) {
     /*alert(12);
      let myForm = document.getElementById('form_log2');
      //alert(document.getElementById('form_log2').name);
@@ -451,7 +452,7 @@ function compareBloodTests() {
             //if (document.getElementById('type_user').value === "doctor"){
             //$('#ajaxContent').html("Successful Registration, wait to be certified.!<br>");
             //}else{
-            $('#ajaxContent').html("Successful bloodest showing.!<br>");
+            $('#ajaxContent').html("Successful blood test showing.!<br>");
             sortBloodTests(responseData);
             //}
             $('#ajaxContent').append(createTablesFromJSON(responseData, null));
@@ -462,6 +463,8 @@ function compareBloodTests() {
             //  $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Email already exists!<br>");
             //} else if (xhr.status === 401){
             // $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + ". Amka already exists!<br>");
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p style='color:red'>Patient has no blood tests before that date!<br></p>");
         } else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
             const responseData = JSON.parse(xhr.responseText);
@@ -477,9 +480,14 @@ function compareBloodTests() {
      console.log(1);
      formData.forEach((value, key) => (data[key] = value));
      console.log(data);*/
-    //if(document.getElementById('type_user').value === "doctor"){
-    xhr.open('GET', 'BloodTests?date=' + document.getElementById("test_date").value);
-
+    if(log === "d"){
+        while(amka.toString().length<11){
+            amka = "0"+amka;
+        }
+        xhr.open('GET', 'BloodTests?date=' + document.getElementById("test_date").value + '&amka='+amka);
+    }else{
+        xhr.open('GET', 'BloodTests?date=' + document.getElementById("test_date").value);
+    }
     //}else{
     //xhr.open('POST', 'Register');
     //}
@@ -722,19 +730,19 @@ function uploadBloodTests() {
 
 }
 
-function giveDateCompareBloodTests() {
+function giveDateCompareBloodTests(amka) {
     $("#choices").html("");
     $("#choices").append("<h2>Pick Max Date:</h2>");
-    $("#choices").append('<form id="form_log3" name="form_log3" onsubmit="compareBloodTests() ;return false;"></form>');
-    $("#form_log3").append('<input type="date" id="test_date" name="test_date" value="2018-01-01" min="1920-01-01" required> <br><br>');
+    $("#choices").append('<form id="form_log3" name="form_log3" onsubmit="compareBloodTests('+amka+') ;return false;"></form>');
+    $("#form_log3").append('<input type="date" id="test_date" name="test_date" value="2018-01-01" min="1920-01-01" required>');
     $("#form_log3").append('<input type="submit" class="button" value="Submit"> <br><br>');
-    $("#choices").append('<input type="button" onclick="toShowGraph()" class="button" value="Show Graph"> <br><br>');
-    $("#choices").append('<input type="button" onclick="setChoicesForLoggedUser()" class="button" value="Back"><br><br>');
+    $("#choices").append('<input type="button" onclick="toShowGraph('+amka+')" class="button" value="Show Graph"> <br><br>');
+    $("#choices").append('<input type="button" onclick="isLoggedIn()" class="button" value="Back"><br><br>');
 }
 
-function toShowGraph() {
+function toShowGraph(amka) {
     $("#choices").html("");
-    $("#choices").append('<form id="form_log4" name="form_log4" onsubmit="GetGraphValues() ;return false;"></form>');
+    $("#choices").append('<form id="form_log4" name="form_log4" onsubmit="GetGraphValues('+amka+') ;return false;"></form>');
     $("#form_log4").append('<select id="Test" name="Test"></select>');
     $("#Test").append('<option value="cholesterol">Cholesterol</option>');
     $("#Test").append('<option value="vitamin_d3">Vitamin d3</option>');
@@ -742,7 +750,7 @@ function toShowGraph() {
     $("#Test").append('<option value="blood_sugar">Blood Sugar</option>');
     $("#Test").append('<option value="iron">Iron</option>');
     $("#form_log4").append('<input type="submit" class="button" value="Submit"> <br><br>');
-    $("#choices").append('<input type="button" onclick="giveDateCompareBloodTests()" class="button" value="Back"><br><br>');
+    $("#choices").append('<input type="button" onclick="giveDateCompareBloodTests('+amka+')" class="button" value="Back"><br><br>');
 }
 
 function createTableForGraph(data) {
@@ -815,7 +823,7 @@ function drawChart(temno) {
  drawChart();
  }*/
 
-function GetGraphValues() {
+function GetGraphValues(amka) {
 
     alert(document.getElementById("Test").value);
     $('#ajaxContent').html("");
@@ -835,7 +843,9 @@ function GetGraphValues() {
              temno[1]=[responseData[0].test_date,responseData[0].cholesterol];*/
             //drawChart(temno);
             createTableForGraph(responseData);
-        } else if (xhr.status !== 200) {
+        } else if (xhr.status === 403) {
+            $('#ajaxContent').html("<p>Patient has no blood tests.<br></p>");
+        }else if (xhr.status !== 200) {
             $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
             const responseData = JSON.parse(xhr.responseText);
             for (const x in responseData) {
@@ -846,9 +856,14 @@ function GetGraphValues() {
         console.log(1);
 
     };
-
-    xhr.open('GET', 'BloodTests?Test=' + document.getElementById("Test").value);
-
+    if (log==="d"){
+        while(amka.toString().length<11){
+            amka = "0"+amka;
+        }
+        xhr.open('GET', 'BloodTests?Test=' + document.getElementById("Test").value + '&amka=' + amka);
+    }else{
+        xhr.open('GET', 'BloodTests?Test=' + document.getElementById("Test").value);
+    }
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }
@@ -1228,14 +1243,6 @@ function patientsGet() {
     xhr.send();
 }
 
-//contains unimplemented function BloodtestGet()
-//BloodtestGet() will contain (after succes if log="d"):
-//$("#choices").append("<button onclick='treatmentform("+username+")' class='button' >Create New Treatment for the Patient</button><br>");
-function seeChoisesForPatient(amka) {
-    $("#ajaxContent").html("<button onclick='BloodtestGet("+amka+")'  class='button'>See Patient's Blood Tests!</button><br>");
-    //$("#ajaxContent").html("<button onclick='treatmeBloodtestGetntform(" + 1 + ")'  class='button'>See Patient's Blood Tests</button><br>");
-}
-
 function treatmentform(bloodtest_idtmp) {
     $("#ajaxContent").load("treatmentform.html");
     docID();
@@ -1254,7 +1261,7 @@ function treatmentsPost() {
             console.log(xhr.responseText);
             $('#ajaxContent').html("<p style='color:green'> Success!</p>");
         } else if (xhr.status === 403) {
-            $('#ajaxContent').html("<p style='color:red'> That bloodtest already has a treatment!</p>");
+            $('#ajaxContent').append("<di> That bloodtest already has a treatment!</p>");
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
         }
@@ -1477,8 +1484,10 @@ function BloodtestGet(amka){
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log("eirini"+xhr.responseText);
-            $('#ajaxContent').html("<h2>Patient's Bloodtests:</h2> <p>Press to add treatment.<br></p>");
-            $('#ajaxContent').append(createTablesFromJSON(responseData,"treatmentform"));
+            $('#ajaxContent').html("<h2>Patient's Bloodtests:</h2> <p>Press to see (add) treatment.<br></p>");
+            //$('#ajaxContent').append(createTablesFromJSON(responseData,"treatmentform"));
+            $('#ajaxContent').append(createTablesFromJSON(responseData,"TreatmentsGet"));
+            
         } else if (xhr.status === 403) {
             $('#ajaxContent').html("<p>Patient has no blood tests.<br></p>");
         }else if (xhr.status !== 200) {
@@ -1495,6 +1504,29 @@ function BloodtestGet(amka){
         amka = "0"+amka;
     }
     xhr.open('GET', 'BloodTests?amka='+amka);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.send();
+}
+
+
+function TreatmentsGet(bloodtest_id){
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const responseData = JSON.parse(xhr.responseText);
+            console.log(xhr.responseText);
+            $('#'+bloodtest_id.toString()).append("<h4>Treatment:</h4>");
+            $('#'+bloodtest_id.toString()).append("<p>(for the following bloodtest)</p>");
+            $('#'+bloodtest_id.toString()).append(createTableFromJSON(responseData));
+        } else if (xhr.status === 403) {
+            //$('#ajaxContent').append("<p>There is no treatment for this blood test.<br></p>");
+            treatmentform(bloodtest_id);
+        }else if (xhr.status !== 200) {
+            $('#ajaxContent').append('Request failed. Returned status of ' + xhr.status + "<br>");
+        }
+
+    };
+    xhr.open('GET', 'Treatments?bloodtest_id='+bloodtest_id);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.send();
 }

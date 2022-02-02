@@ -67,12 +67,21 @@ public class Patients extends HttpServlet {
             Doctor d = edt.databaseToDoctorUsername(username);
             r = ert.databaseToRandevouzs(d.getDoctor_id());
             System.out.println("\t randevous: " + r);
-            if (r != null) {
+            if (/*r != null*/!r.isEmpty()) {
+                ArrayList<Integer> in = new ArrayList<Integer>();
                 for (int i = 0; i < r.size(); i++) {
                     if (r.get(i).getStatus().equals("done") && r.get(i).getUser_id() != 0) {
                         int id = r.get(i).getUser_id();
                         System.out.println("\tPatients id: " + id);
-                        p.add(esut.databaseToSimpleUserUserID(id));
+                        SimpleUser su = esut.databaseToSimpleUserUserID(id);
+                        Gson gson1 = new Gson();
+                        String json1 = gson1.toJson(su);
+                        System.out.println("\tPatient with taht id: " + json1);
+                        System.out.println("\tPatients id contained on list int: " + in.contains(Integer.valueOf(id)));
+                        if (!in.contains(Integer.valueOf(id))) {
+                            in.add(Integer.valueOf(id));
+                            p.add(su);
+                        }
                     }
                 }
                 Gson gson = new Gson();
