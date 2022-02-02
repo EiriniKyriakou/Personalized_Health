@@ -555,7 +555,7 @@ function ChangePUT() {
 }
 
 function getWH() {
-    alert(100);
+    //alert(100);
     var xhr = new XMLHttpRequest();
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -1429,7 +1429,7 @@ function TreatmentsGet(bloodtest_id){
             $('#ajaxContent').append(createTableFromJSON(responseData));
         } else if (xhr.status === 403) {
             if(log==="su"){
-                $('#ajaxContent').append("<p>There is no treatment for this blood test.<br></p>");
+                $('#ajaxContent').append("<p>There is no treatment for this blood test with id = "+bloodtest_id+".<br></p>");
             }else{
                 treatmentform(bloodtest_id);
             }
