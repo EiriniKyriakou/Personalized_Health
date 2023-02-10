@@ -186,7 +186,17 @@ function isLoggedIn() {
 
 //Loggin optiond
 function userLogin() {
-    $("#choices").load("login.html");
+    $("#choices").html('');
+    $("#choices").append('<div id="loginTitle" style="display:flex; gap:20px; align-items: center;"></div><br>');
+    $("#loginTitle").append('<button onclick="isLoggedIn()"  class="button back"> <img src="./img/back-arrow.png" width="20px"> Back</button>');
+    $("#loginTitle").append('<h4 style="margin-bottom: 0; align-self: center"> User Login</h4>');
+    $("#choices").append('<div class="center"><form id="loginForm" name="loginForm" onsubmit="loginPost();return false;"></form></div>');
+    $("#loginForm").append('<label for="username">Username:</label><br>');
+    $("#loginForm").append('<input type="text"  id="username" name="username" required><br>');
+    $("#loginForm").append('<label for="password">Password:</label><br>');
+    $("#loginForm").append('<input type="password"  name="password" id="password" required><br><br>');
+    $("#loginForm").append('<input type="submit" class="button" value="Login"><br>');
+    $("#choices").append('<div id="error"></div>');
     document.getElementById("title").innerHTML = "User Login";
     $("#ajaxContent").html("");
     log = "su";
@@ -194,7 +204,17 @@ function userLogin() {
 }
 
 function doctorLogin() {
-    $("#choices").load("docLogin.html");
+    $("#choices").html('');
+    $("#choices").append('<div id="loginTitle" style="display:flex; gap:20px; align-items: center;"></div><br>');
+    $("#loginTitle").append('<button onclick="isLoggedIn()"  class="button back"> <img src="./img/back-arrow.png" width="20px"> Back</button>');
+    $("#loginTitle").append('<h4 style="margin-bottom: 0; align-self: center"> Doctor Login</h4>');
+    $("#choices").append('<div class="center"><form id="loginForm" name="loginForm" onsubmit="loginPost();return false;"></form></div>');
+    $("#loginForm").append('<label for="username">Username:</label><br>');
+    $("#loginForm").append('<input type="text"  id="username" name="username" required><br>');
+    $("#loginForm").append('<label for="password">Password:</label><br>');
+    $("#loginForm").append('<input type="password"  name="password" id="password" required><br><br>');
+    $("#loginForm").append('<input type="submit" class="button" value="Login"><br>');
+    $("#choices").append('<div id="error"></div>');
     document.getElementById("title").innerHTML = "Doctor Login";
     $("#ajaxContent").html("");
     log = "d";
@@ -202,7 +222,17 @@ function doctorLogin() {
 }
 
 function adminLogin() {
-    $("#choices").load("adminLogin.html");
+    $("#choices").html('');
+    $("#choices").append('<div id="loginTitle" style="display:flex; gap:20px; align-items: center;"></div><br>');
+    $("#loginTitle").append('<button onclick="isLoggedIn()"  class="button back"> <img src="./img/back-arrow.png" width="20px"> Back</button>');
+    $("#loginTitle").append('<h4 style="margin-bottom: 0; align-self: center"> Administrator Login</h4>');
+    $("#choices").append('<div class="center"><form id="loginForm" name="loginForm" onsubmit="loginPost();return false;"></form></div>');
+    $("#loginForm").append('<label for="username">Username:</label><br>');
+    $("#loginForm").append('<input type="text"  id="username" name="username" required><br>');
+    $("#loginForm").append('<label for="password">Password:</label><br>');
+    $("#loginForm").append('<input type="password"  name="password" id="password" required><br><br>');
+    $("#loginForm").append('<input type="submit" class="button" value="Login"><br>');
+    $("#choices").append('<div id="error"></div>');
     document.getElementById("title").innerHTML = "Administrator Login";
     $("#ajaxContent").html("");
     log = "a";
@@ -215,15 +245,16 @@ function guestLogin() {
     console.log(log);
     $("#choices").html("");
     document.getElementById("title").innerHTML = "Guest";
-    $("#choices").append("<h2>Choices:</h2>");
+    $("#choices").append('<div id="loginTitle" style="display:flex; gap:20px; align-items: center;"></div>');
+    $("#loginTitle").append('<button onclick="isLoggedIn()"  class="button back"> <img src="./img/back-arrow.png" width="20px"> Back</button>');
+    $("#loginTitle").append('<h4 style="margin-bottom: 0; align-self: center"> Choices</h4>');
     $("#choices").append("<button onclick='certifiedDoctorsGet(null)'  class='button'>Get All Certified Doctors</button><br>");
     $("#choices").append("<button onclick='userLogin()' class='button' >Loggin as Simple User</button><br>");
-    $("#choices").append("<a class='button' target='_blank' href='http://localhost:8080/A3-Assignment1'>Register</a><br>");
-    $("#choices").append("<br><h2>Useful links:</h2>");
+    $("#choices").append("<button onclick='register()' class='button'>Register</button>");
+    $("#choices").append("<h4 style='margin-top:10px;'>Useful links:</h4>");
     $("#choices").append('<a href="https://www.vrisko.gr/efimeries-farmakeion/irakleio" target="_blank"><img src="https://www.vrisko.gr/graphlink/Pharmacies/image/160x60_Banner_n/?Region=irakleio&SmallRegion=true&NativeRegion=%ce%97%cf%81%ce%ac%ce%ba%ce%bb%ce%b5%ce%b9%ce%bf&" border="0" alt="Εφημερεύοντα Φαρμακεία Ηράκλειο" /></a><br>');
     $("#choices").append('<a href="https://www.vrisko.gr/efimeries-nosokomeion?SelectedCity=hrakleio" target="_blank"><img src="https://www.vrisko.gr/graphlink/Hospitals/image/160x60_Banner_n/?Prefecture=hrakleio&SmallPrefecture=true&NativePrefecture=%ce%97%ce%a1%ce%91%ce%9a%ce%9b%ce%95%ce%99%ce%9f&" border="0" alt="Εφημερεύοντα Νοσοκομεία ΗΡΑΚΛΕΙΟ" /></a><br>');
     $("#choices").append('<a href="https://covid19.gov.gr/" target="_blank" class="button">Info for Covid-19</a><br>');
-    $("#choices").append("<br><button onclick='isLoggedIn()'  class='button'>Back</button><br>");
     $("#ajaxContent").html("");
 }
 
@@ -292,7 +323,7 @@ function loginPost() {
 //set Choices
 function setChoicesForLoggedUser() {
     $("#choices").html("");
-    $("#choices").append("<h2>Choices:</h2>");
+    $("#choices").append("<h4>Choices:</h4>");
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='getWH()'  class='button'>Get BMI</button><br>");
@@ -311,7 +342,7 @@ function setChoicesForLoggedUser() {
 
 function setChoicesForDoctor() {
     $("#choices").html("");
-    $("#choices").append("<h2>Choices:</h2>");
+    $("#choices").append("<h4>Choices:</h4>");
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
     $("#choices").append("<button onclick='changeDataRequest()' class='button' >Change Your Data</button><br>");
     $("#choices").append("<button onclick='patientsGet()' class='button' >See Your Patients</button><br>");
@@ -327,7 +358,7 @@ function setChoicesForDoctor() {
 
 function setChoicesForAdmin() {
     $("#choices").html("");
-    $("#choices").append("<h2>Choices:</h2>");
+    $("#choices").append("<h4>Choices:</h4>");
     $("#choices").append("<button onclick='allUsersGet()' class='button' >See All Users</button><br>");
     $("#choices").append("<button onclick='uncertifiedDoctorsGet()' class='button' >See Pending Applications</button><br>");
     $("#choices").append("<button onclick='dataGet()' class='button' >See Your Data</button><br>");
@@ -349,7 +380,7 @@ function giveBloodTests() {
     xhr.onload = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2>Blood Tests:</h2>");
+            $('#ajaxContent').html("<h4>Blood Tests:</h4>");
             $('#ajaxContent').append("<p> Press to see bloodtest's treatment</p>")
             $('#ajaxContent').append(createTablesFromJSON(responseData, "TreatmentsGet"));
         } else if (xhr.status === 403) {
@@ -485,7 +516,7 @@ function dataGet() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2>Your Data</h2>");
+            $('#ajaxContent').html("<h4>Your Data</h4>");
             $('#ajaxContent').append(createTableFromJSON(responseData));
         } else if (xhr.status !== 200) {
             alert('Request failed. Returned status of ' + xhr.status);
@@ -503,7 +534,7 @@ function changeDataRequest() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            //$('#ajaxContent').html("<h2>Your Updated Data</h2>");
+            //$('#ajaxContent').html("<h4>Your Updated Data</h4>");
             //$('#ajaxContent').append(createTableFromJSON(responseData));
             //console.log(responseData);
             for (const x in responseData) {
@@ -632,9 +663,10 @@ function getWG() {
 function uploadBloodTests() {
     $("#choices").html("");
     $("#ajaxContent").html("");
-    $("#choices").append("<h2>Choices:</h2>");
+    $("#choices").append('<div id="loginTitle" style="display:flex; gap:20px; align-items: center;"></div>');
+    $("#loginTitle").append('<button onclick="setChoicesForLoggedUser()"  class="button back"> <img src="./img/back-arrow.png" width="20px"> Back</button>');
+    $("#loginTitle").append('<h4 style="margin-bottom: 0; align-self: center"> Blood Test:</h4>');
     $("#choices").append('<form id="form_log2" name="form_log2" onsubmit="Bloodtest() ;return false;"></form>');
-    $("#form_log2").append('<h3>Input</h3><br>');
     $("#form_log2").append('<label for="date">*Date Of Tests</label> <br>');
     $("#form_log2").append('<input type="date" id="test_date" name="test_date" value="1980-01-01" min="1920-01-01" required> <br><br>');
     $("#form_log2").append('<label for="MedicalCenter">*Medical Center</label><br>');
@@ -651,13 +683,12 @@ function uploadBloodTests() {
     $("#form_log2").append('<label for="VitaminB12">*Vitamin B12</label><br>');
     $("#form_log2").append('<input type="number" id="vitamin_b12" name="vitamin_b12" step="0.01" required><br><br>');
     $("#form_log2").append('<input type="submit" class="button" value="Submit" > <br><br>');
-    $("#choices").append('<input type="button" onclick="setChoicesForLoggedUser()" class="button" value="Back"><br><br>');
 }
 
 function giveDateCompareBloodTests(amka) {
     $("#choices").html("");
     $("#ajaxContent").html("");
-    $("#choices").append("<h2>Pick Max Date:</h2>");
+    $("#choices").append("<h4>Pick Max Date:</h4>");
     $("#choices").append('<form id="form_log3" name="form_log3" onsubmit="compareBloodTests('+amka+') ;return false;"></form>');
     $("#form_log3").append('<input type="date" id="test_date" name="test_date" value="2018-01-01" min="1920-01-01" required>');
     $("#form_log3").append('<input type="submit" class="button" value="Submit"> <br><br>');
@@ -851,7 +882,7 @@ function certifiedDoctorsGet(ap) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
-            $('#ajaxContent').html("<h2>Certified Doctors:</h2>");
+            $('#ajaxContent').html("<h4>Certified Doctors:</h4>");
             if (ap === 1) {
                 console.log('Press a table to see the doctors available appointments');
                 $('#ajaxContent').append('<p> Press a table to see the doctor\'s available appointments.</p>');
@@ -880,7 +911,7 @@ function uncertifiedDoctorsGet() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log(responseData);
-            $('#ajaxContent').html("<h2>Uncertified Doctors:</h2>");
+            $('#ajaxContent').html("<h4>Uncertified Doctors:</h4>");
             $('#ajaxContent').append("<p>Press a doctor's table to certify</p>");
             $('#ajaxContent').append(createTablesFromJSON(responseData, "certifiedPut"));
         } else if (xhr.status !== 200) {
@@ -899,7 +930,7 @@ function allUsersGet() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2>All Users:</h2>");
+            $('#ajaxContent').html("<h4>All Users:</h4>");
             $('#ajaxContent').append("<p>Press a user's table to delete</p>");
             $('#ajaxContent').append(createTablesFromJSON(responseData, "showDelete"));
         } else if (xhr.status !== 200) {
@@ -1044,7 +1075,7 @@ function RandevouGet(day, p, action) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2>Your Appointments</h2>");
+            $('#ajaxContent').html("<h4>Your Appointments</h4>");
             if (day === '0') {
                 console.log(day);
                 $('#ajaxContent').append("<p>Press Apointment to modify status.</p>");
@@ -1127,7 +1158,7 @@ function RandevouPut(newstatus, r_id) {
 }
 
 function appointmentsday() {
-    $('#ajaxContent').html("<h3>Choose the day that you want to see</h3>");
+    $('#ajaxContent').html("<h5>Choose the day that you want to see</h5>");
     $('#ajaxContent').append('<input type="date" id="date" name="date" onchange="day()"/><br>');
     //$('#ajaxContent').html('<input type="date" id="date" name="date"/><br>');
 }
@@ -1146,7 +1177,7 @@ function patientsGet() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2> Your Patients:</h2>");
+            $('#ajaxContent').html("<h4> Your Patients:</h4>");
             $('#ajaxContent').append("<p>Press patient to see more.</p>");
             $('#ajaxContent').append(createTablesFromJSON(responseData, "seeChoisesForPatient"));
         } else if (xhr.status === 403) {
@@ -1204,7 +1235,7 @@ function messegesGet() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2> Your Messeges:</h2>");
+            $('#ajaxContent').html("<h4> Your Messeges:</h4>");
             $('#ajaxContent').append("<p>Press messege to reply.</p>");
             $('#ajaxContent').append(createTablesFromJSON(responseData, "messageReply"));
         } else if (xhr.status === 403) {
@@ -1316,7 +1347,7 @@ function userRandevouzGet(doc_id) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             console.log(xhr.responseText);
             const responseData = JSON.parse(xhr.responseText);
-            $('#ajaxContent').html("<h2> All the Available Appointments:</h2>");
+            $('#ajaxContent').html("<h4> All the Available Appointments:</h4>");
             $('#ajaxContent').append("<p>Press one to book.</p>");
             $('#ajaxContent').append(createTablesFromJSON(responseData, "userAppointment"));
         } else if (xhr.status === 403) {
@@ -1401,7 +1432,7 @@ function BloodtestGet(amka){
         if (xhr.readyState === 4 && xhr.status === 200) {
             const responseData = JSON.parse(xhr.responseText);
             console.log("eirini"+xhr.responseText);
-            $('#ajaxContent').html("<h2>Patient's Bloodtests:</h2> <p>Press to see (add) treatment.<br></p>");
+            $('#ajaxContent').html("<h4>Patient's Bloodtests:</h4> <p>Press to see (add) treatment.<br></p>");
             //$('#ajaxContent').append(createTablesFromJSON(responseData,"treatmentform"));
             $('#ajaxContent').append(createTablesFromJSON(responseData,"TreatmentsGet"));
             

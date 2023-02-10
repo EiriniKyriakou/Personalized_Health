@@ -1,7 +1,10 @@
 <!doctype html>
 <html lang="en" class="no-js">
     <form id="form_log" name="form_log" onsubmit='RegisterPOST();return false;'>
-        <h4 style="text-align: center">Register Form</h4>
+        <div style="display:flex; gap:20px; align-items: center;">
+            <button onclick="isLoggedIn()"  class="button back" > <img src="./img/back-arrow.png" width="20px"> Back</button>
+            <h4 style="text-align: center; margin-bottom: 0;" >Register Form</h4> 
+        </div><br>
         <label for="username">*Username:</label> <br>
         <input type="text" id="username" name="username" placeholder="Your Usename..."
                title="at least 8 letters" minlength=8 required><br><br>

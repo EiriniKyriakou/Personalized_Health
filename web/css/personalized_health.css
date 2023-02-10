@@ -1,11 +1,11 @@
+body {
+    background-color: #F2E9E4;
+}
+
 header{
     text-align: center;
     /*font-style: oblique;*/
     color: #22223B;
-}
-
-body {
-    background-color: #F2E9E4;
 }
 
 .cols{
@@ -33,6 +33,22 @@ label{
     cursor: pointer;
     min-width: 120px;
     border: 1px solid black;
+    margin:5px;
+}
+
+.back{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 3px 10px;
+    min-width: 100px;
+}
+
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .block {
@@ -56,64 +72,8 @@ th{
     width: 20%;
     background-color: rgba(167, 166, 255, 0.25);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
 }
-/*tr{
-    border: 2px solid black;
-}
-*/
-
-/*.row {
-    width:100%;
-
-}*/
-
-/* Create two equal columns that floats next to each other 
-.column {
-    display:inline-block;
-    float: left;
-    padding: 10px;
-    /* 	text-align: center;
-     border: 5px solid black;
-    border-radius: 8px;
-    margin-right:2%;
-    margin-left:2%;
-    min-height:400px;
-    width: 40%;
-}
-*/
-
-/*.column1Width {
-    width: 50%;
-}
-*/
-/*.column3Width {
-    width: 99%;
-}
-
-.column2Width {
-    width: 60%;
-}
-
-.subColumn {
-    float: left;
-    width: 45%;
-    padding: 10px;
-    border: 5px solid black;
-    border-radius: 8px;
-    margin-right:10px;
-    margin-left:10px;
-}
-*/
-/* Clear floats after the columns */
-/*.row:after {
-    content: "";
-}*/
-
-/*
-h2{
-    text-align: center;
-}
-*/
