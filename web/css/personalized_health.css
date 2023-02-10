@@ -64,16 +64,16 @@ label{
 }
 
 table, td, th{
-    border: 2px solid black;
-    /*min-width: 450px;*/
-}
-
-th{
-    width: 20%;
-    background-color: rgba(167, 166, 255, 0.25);
+    border: 2px solid #22223B;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th{
+    background-color: #4A4E69;
+    color: white;
+    text-align: center;
 }
